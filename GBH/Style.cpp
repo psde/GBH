@@ -95,6 +95,9 @@ int Style::getPaletteValue(int palette_index, short color_index){
 	return page[(palette_index % 64) + color_index * 64];
 }
 
+unsigned Style::getTexture(int texture, short flat){
+	return this->getTexture(texture, (bool)flat);	
+};
 
 unsigned Style::getTexture(int texture, bool flat){
 	if(flat) return this->tiles_flat[texture].gl_i;	

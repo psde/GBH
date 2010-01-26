@@ -30,6 +30,7 @@ public:
 
 	int getPaletteValue(int, short);
 
+	unsigned getTexture(int texture, short flat);
 	unsigned getTexture(int texture, bool flat);
 };
 
