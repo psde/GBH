@@ -64,6 +64,7 @@ Map::~Map()
 
 void Map::draw()
 {
+
 	int _drawrange = 100;
 	int _start = 0;
 	for(int z=0;z<7;z++){

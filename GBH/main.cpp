@@ -47,18 +47,20 @@ class GameWindow : public Gosu::Window
 			glMatrixMode(GL_MODELVIEW);
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
 			glRotatef(this->a, 1, 0, 0);
 			glTranslatef(this->x, this->y, this->z);
 
 			glEnable(GL_TEXTURE_2D);
+			glBindTexture(GL_TEXTURE_2D, 0);
 
-			// z-ordering - impossible for vertex shader at the moment
+			// z-ordering
 			glEnable(GL_DEPTH_TEST);			
 			glDepthRange(0,1);
 			glDepthFunc(GL_LEQUAL);
 
-			// Alpha-testing - maybe implemented in shader?
+			// Alpha-testing
 			glAlphaFunc(GL_GREATER, 0.75f);
 			glEnable(GL_ALPHA_TEST);
 			

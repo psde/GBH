@@ -3,6 +3,7 @@
 
 #include "Gta2Formats.hpp"
 #include "Style.hpp"
+#include "VBO.hpp"
 #include "main.hpp"
 
 struct BlockFace{
@@ -23,6 +24,8 @@ private:
 	static BlockFace* getBlockFace(int bitmap);
 	BlockFace *faces[5];
 	BlockInfo block_info;
+
+	VBO *vertices, *texcoord;
 	
 public:
 	Block(BlockInfo blck);

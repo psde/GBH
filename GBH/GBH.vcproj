@@ -190,6 +190,10 @@
 				RelativePath=".\Style.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\VBO.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -218,6 +222,10 @@
 			</File>
 			<File
 				RelativePath=".\Style.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\VBO.hpp"
 				>
 			</File>
 		</Filter>

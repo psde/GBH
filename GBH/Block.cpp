@@ -13,24 +13,25 @@ Block::Block(BlockInfo blck){
     this->faces[4] = Block::getBlockFace(this->block_info.left);
 }
 
-Block::~Block(){
+Block::~Block()
+{
 	for(int i=0;i<=4;i++)
 		delete this->faces[i];
 }
 
 BlockFace* Block::getBlockFace(int bitmap)
 {
-        BlockFace* temp = new BlockFace();
+	BlockFace* temp = new BlockFace();
 
-        temp->tile_number = bitmap & 1023;
-        temp->lightning = (bitmap & 1536) >> 10;
-        temp->wall = (bitmap & 1024) >> 9;
-        temp->bullet_wall = (bitmap & 2048) >> 10;
-        temp->flat = (bitmap & 4096) >> 11;
-        temp->flip = (bitmap & 8192) >> 12;
-        temp->rotation_code = (bitmap & 49152) >> 14;
+	temp->tile_number = bitmap & 1023;
+	temp->lightning = (bitmap & 1536) >> 10;
+	temp->wall = (bitmap & 1024) >> 9;
+	temp->bullet_wall = (bitmap & 2048) >> 10;
+	temp->flat = (bitmap & 4096) >> 11;
+	temp->flip = (bitmap & 8192) >> 12;
+	temp->rotation_code = (bitmap & 49152) >> 14;
 
-        return temp;
+	return temp;
 }
 
 bool Block::isZero(){
@@ -44,6 +45,21 @@ bool Block::isZero(){
 
 void Block::draw(int x, int y, int z, Style* style)
 {
+	glPushMatrix();
+		glEnableClientState(GL_VERTEX_ARRAY);
+		//bind
+		glTexCoordPointer(3, GL_FLOAT, 0, 0);
+
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		//bind
+		glTexCoordPointer(2, GL_FLOAT, 0, 0);
+
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		glDisableClientState(GL_VERTEX_ARRAY);
+	glPopMatrix();
+
+
+	return;
 	y = y*-1;
 	
 	if(this->slopeType > 0 && this->groundType != 0) return;
@@ -53,7 +69,6 @@ void Block::draw(int x, int y, int z, Style* style)
 	if(this->faces[0]->tile_number > 0)
 	{
 		glBindTexture(GL_TEXTURE_2D, style->getTexture(this->faces[0]->tile_number, this->faces[0]->flat));
-		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		glBegin(GL_QUADS);
 			glTexCoord2f(0.0f, 1.0f);
 			glVertex3f(x + 0.0f, y + 0.0f, z + 1.0f);
@@ -69,22 +84,22 @@ void Block::draw(int x, int y, int z, Style* style)
 		glEnd();
 	}
 	
-        // top
+	// top
 	if(this->faces[1]->tile_number > 0)
 	{
 		glBindTexture(GL_TEXTURE_2D, style->getTexture(this->faces[1]->tile_number, this->faces[1]->flat));
-	        glBegin(GL_QUADS);
-        	        glTexCoord2f(0.0f, 1.0f);
-                	glVertex3f(x + 0.0f, y + 1.0f, z + 0.0f);
+	    glBegin(GL_QUADS);
+			glTexCoord2f(0.0f, 1.0f);
+    		glVertex3f(x + 0.0f, y + 1.0f, z + 0.0f);
 
-	                glTexCoord2f(1.0f, 1.0f);
-        	        glVertex3f(x + 1.0f, y + 1.0f, z + 0.0f);
+			glTexCoord2f(1.0f, 1.0f);
+			glVertex3f(x + 1.0f, y + 1.0f, z + 0.0f);
 
-                	glTexCoord2f(1.0f, 0.0f);
-                	glVertex3f(x + 1.0f, y + 1.0f, z + 1.0f);
+    		glTexCoord2f(1.0f, 0.0f);
+    		glVertex3f(x + 1.0f, y + 1.0f, z + 1.0f);
 
-                	glTexCoord2f(0.0f, 0.0f);
-                	glVertex3f(x + 0.0f, y + 1.0f, z + 1.0f);
+    		glTexCoord2f(0.0f, 0.0f);
+    		glVertex3f(x + 0.0f, y + 1.0f, z + 1.0f);
 		glEnd();
 	}
 
@@ -110,39 +125,39 @@ void Block::draw(int x, int y, int z, Style* style)
 	// left
 	if(this->faces[4]->tile_number > 0)
 	{
-        	glBindTexture(GL_TEXTURE_2D, style->getTexture(this->faces[4]->tile_number, this->faces[4]->flat));
-	        glBegin(GL_QUADS);
-        	        glTexCoord2f(0.0f, 1.0f);
-	                glVertex3f(x + 0.0f, y + 0.0f, z + 0.0f);
-	
-	                glTexCoord2f(1.0f, 1.0f);
-                	glVertex3f(x + 0.0f, y + 1.0f, z + 0.0f);
+		glBindTexture(GL_TEXTURE_2D, style->getTexture(this->faces[4]->tile_number, this->faces[4]->flat));
+		glBegin(GL_QUADS);
+			glTexCoord2f(0.0f, 1.0f);
+			glVertex3f(x + 0.0f, y + 0.0f, z + 0.0f);
 
-        	        glTexCoord2f(1.0f, 0.0f);
-	                glVertex3f(x + 0.0f, y + 1.0f, z + 1.0f);
+			glTexCoord2f(1.0f, 1.0f);
+			glVertex3f(x + 0.0f, y + 1.0f, z + 0.0f);
 
-                	glTexCoord2f(0.0f, 0.0f);
-        	        glVertex3f(x + 0.0f, y + 0.0f, z + 1.0f);
-	        glEnd();
+			glTexCoord2f(1.0f, 0.0f);
+			glVertex3f(x + 0.0f, y + 1.0f, z + 1.0f);
+
+			glTexCoord2f(0.0f, 0.0f);
+			glVertex3f(x + 0.0f, y + 0.0f, z + 1.0f);
+		glEnd();
 	}
 
-        // right
+	// right
 	if(this->faces[2]->tile_number > 0)
 	{
-        	glBindTexture(GL_TEXTURE_2D, style->getTexture(this->faces[2]->tile_number, this->faces[2]->flat));
-       	 	glBegin(GL_QUADS);
-                	glTexCoord2f(0.0f, 1.0f);
-                	glVertex3f(x + 1.0f, y + 0.0f, z + 0.0f);
+    	glBindTexture(GL_TEXTURE_2D, style->getTexture(this->faces[2]->tile_number, this->faces[2]->flat));
+   	 	glBegin(GL_QUADS);
+    		glTexCoord2f(0.0f, 1.0f);
+    		glVertex3f(x + 1.0f, y + 0.0f, z + 0.0f);
 
-	                glTexCoord2f(1.0f, 1.0f);
-        	        glVertex3f(x + 1.0f, y + 1.0f, z + 0.0f);
+			glTexCoord2f(1.0f, 1.0f);
+			glVertex3f(x + 1.0f, y + 1.0f, z + 0.0f);
 
-                	glTexCoord2f(1.0f, 0.0f);
-	                glVertex3f(x + 1.0f, y + 1.0f, z + 1.0f);
-	
-        	        glTexCoord2f(0.0f, 0.0f);
-                	glVertex3f(x + 1.0f, y + 0.0f, z + 1.0f);
-        	glEnd();
+    		glTexCoord2f(1.0f, 0.0f);
+			glVertex3f(x + 1.0f, y + 1.0f, z + 1.0f);
+
+			glTexCoord2f(0.0f, 0.0f);
+    		glVertex3f(x + 1.0f, y + 0.0f, z + 1.0f);
+    	glEnd();
 	}
 
 }
