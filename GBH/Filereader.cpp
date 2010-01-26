@@ -20,20 +20,6 @@ Filereader::Filereader(const char* filename){
 	this->offset += sizeof(FileHeader);
 
 	if(strncmp(this->file_header->name,"GBMP",4) != 0 && strncmp(this->file_header->name,"GBST",4) != 0) throw runtime_error("Filereader: not a GTA2 data file.");
-
-/*
-	while(offset < map_data + size){
-		ChunkHeader* chunk_header = reinterpret_cast<ChunkHeader*>(offset);
-		offset += sizeof(ChunkHeader);
-		cout << "chunk: " << chunk_header->type << endl;
-
-		if(strncmp(chunk_header->type,"DMAP",4) == 0) {
-
-		}else{
-			offset += chunk_header->size;
-		};
-	}
-	*/
 }
 
 Filereader::~Filereader(){
@@ -55,9 +41,9 @@ Chunk* Filereader::getNextChunk(){
 		this->offset += chk_header->size;
 		return chk;
 	}else{
-		chk_header = reinterpret_cast<ChunkHeader*>(malloc(sizeof(ChunkHeader)));
+		/*chk_header = reinterpret_cast<ChunkHeader*>(malloc(sizeof(ChunkHeader)));
 		chk_header->size = 0;
-		chk->header = chk_header;
+		chk->header = chk_header;*/
 		return 0;
 	}
 }

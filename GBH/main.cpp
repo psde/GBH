@@ -24,9 +24,9 @@ class GameWindow : public Gosu::Window
 			this->fps = new Gosu::fpsCounter(&graphics(), Gosu::realWidth(graphics())-203, 3, 200, 100, 0.03f);
 
 			this->style = new Style();
-			this->style->loadStyle("data/styles/bil.sty");
+			this->style->loadStyle("data/styles/wil.sty");
 
-			this->map = new Map("data/maps/bil.gmp", this->style);
+			this->map = new Map("data/maps/wil.gmp", this->style);
 
 			this->x = -12;
 			this->y = 30;
@@ -59,7 +59,7 @@ class GameWindow : public Gosu::Window
 			glDepthFunc(GL_LEQUAL);
 
 			// Alpha-testing - maybe implemented in shader?
-			glAlphaFunc(GL_GREATER, 0.0f);
+			glAlphaFunc(GL_GREATER, 0.75f);
 			glEnable(GL_ALPHA_TEST);
 			
 			map->draw();
@@ -85,7 +85,7 @@ class GameWindow : public Gosu::Window
 
 			graphics().endGL();
 
-			this->font->draw(L"x/y/z/a: " + boost::lexical_cast<wstring>(this->x) + L", " + boost::lexical_cast<wstring>(this->y) + L", " + boost::lexical_cast<wstring>(this->z) + L" @ " + boost::lexical_cast<wstring>(this->a) + L"°", 0, 0, 1);
+			this->font->draw(L"x/y/z/a: " + boost::lexical_cast<wstring>(this->x) + L", " + boost::lexical_cast<wstring>(this->y) + L", " + boost::lexical_cast<wstring>(this->z) + L" @ " + boost::lexical_cast<wstring>(this->a) + L"", 0, 0, 1);
 
 			fps->updateFPS();
 			fps->draw();
@@ -102,8 +102,8 @@ class GameWindow : public Gosu::Window
 			if(input().down(Gosu::kbPageDown)) this->z += 1;
 			if(input().down(Gosu::kbPageUp)) this->z -= 1;
 
-			if(input().down(Gosu::kbW)) this->a += 1;
-			if(input().down(Gosu::kbS)) this->a -= 1;
+			if(input().down(Gosu::kbS)) this->a += 1;
+			if(input().down(Gosu::kbW)) this->a -= 1;
 
 			map->update();
 		}

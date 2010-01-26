@@ -44,21 +44,22 @@ Map::Map(const char *map, Style* style){
 				}
 			}
 		}
+		free(chk);
 	}
 	delete reader;
 }
 
 Map::~Map()
 {
-        for(int z=0;z<7;z++){
-                for(int x=0;x<255;x++){
-                        for(int y=0;y<255;y++){
-                                if(!this->city_sphere[x][y][z]->isZero()){
-                                        delete this->city_sphere[x][y][z];
-                                }
-                        }
-                }
-        }
+    for(int z=0;z<7;z++){
+		for(int x=0;x<255;x++){
+			for(int y=0;y<255;y++){
+				if(!this->city_sphere[x][y][z]->isZero()){
+					delete this->city_sphere[x][y][z];
+				}
+			}
+		}
+    }
 }
 
 void Map::draw()
