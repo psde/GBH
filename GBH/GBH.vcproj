@@ -175,10 +175,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\BlockReader.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Filereader.cpp"
 				>
 			</File>
@@ -202,10 +198,6 @@
 			>
 			<File
 				RelativePath=".\Block.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\BlockReader.hpp"
 				>
 			</File>
 			<File
