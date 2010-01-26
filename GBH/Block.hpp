@@ -5,7 +5,7 @@
 #include "Style.hpp"
 #include "main.hpp"
 
-struct block_face{
+struct BlockFace{
 	short tile_number;
 	short lightning;
 	short wall;
@@ -17,11 +17,11 @@ struct block_face{
 
 class Block {
 private:
-	short ground_type;
-	short slope_type;
+	short groundType;
+	short slopeType;
 
-	static block_face* getBlockFace(int bitmap);
-	block_face *faces[5];
+	static BlockFace* getBlockFace(int bitmap);
+	BlockFace *faces[5];
 	BlockInfo block_info;
 	
 public:

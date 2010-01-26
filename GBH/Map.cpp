@@ -28,7 +28,7 @@ Map::Map(const char *map, Style* style){
 			Block* block_zero = new Block(c_map.blocks[0]);
 
 			for(int x=0;x<255;x++) for(int y=0;y<255;y++) for(int z=0;z<7;z++){
-				this->city_sphere[x][y][z] = block_zero;
+				this->citySphere[x][y][z] = block_zero;
 			}
 
 			for(int x=0;x<255;x++) for(int y=0;y<255;y++) {
@@ -39,7 +39,7 @@ Map::Map(const char *map, Style* style){
 				int i = 0;
 
 				for(i=0;i<(column->height-column->offset);i++){
-					this->city_sphere[x][y][i+column->offset] = new Block(c_map.blocks[column->blockd[i]]);
+					this->citySphere[x][y][i+column->offset] = new Block(c_map.blocks[column->blockd[i]]);
 					//this->city_sphere[x][y][i+column->offset]->buildVBOs(-1,-1,-1, style);
 				}
 			}
@@ -54,8 +54,8 @@ Map::~Map()
     for(int z=0;z<7;z++){
 		for(int x=0;x<255;x++){
 			for(int y=0;y<255;y++){
-				if(!this->city_sphere[x][y][z]->isZero()){
-					delete this->city_sphere[x][y][z];
+				if(!this->citySphere[x][y][z]->isZero()){
+					delete this->citySphere[x][y][z];
 				}
 			}
 		}
@@ -69,8 +69,8 @@ void Map::draw()
 	for(int z=0;z<7;z++){
 		for(int x=_start;x<_drawrange+_start;x++){
 			for(int y=_start;y<_drawrange+_start;y++){
-				if(!this->city_sphere[x][y][z]->isZero()){
-					this->city_sphere[x][y][z]->draw(x, y, z, this->style);
+				if(!this->citySphere[x][y][z]->isZero()){
+					this->citySphere[x][y][z]->draw(x, y, z, this->style);
 				}
 			}
 		}

@@ -8,7 +8,7 @@ class Filereader{
 	private:
 		int size;
 		char* offset;
-		char* map_data;
+		char* mapData;
 
 	public:
 		FileHeader* file_header;

@@ -3,8 +3,8 @@
 Block::Block(BlockInfo blck){
 	this->block_info = blck;
 
-	this->ground_type = this->block_info.slope_type & 3;
-	this->slope_type = (this->block_info.slope_type & 252) >> 2;
+	this->groundType = this->block_info.slope_type & 3;
+	this->slopeType = (this->block_info.slope_type & 252) >> 2;
 
     this->faces[0] = Block::getBlockFace(this->block_info.lid);
     this->faces[1] = Block::getBlockFace(this->block_info.top);
@@ -18,9 +18,9 @@ Block::~Block(){
 		delete this->faces[i];
 }
 
-block_face* Block::getBlockFace(int bitmap)
+BlockFace* Block::getBlockFace(int bitmap)
 {
-        block_face* temp = new block_face();
+        BlockFace* temp = new BlockFace();
 
         temp->tile_number = bitmap & 1023;
         temp->lightning = (bitmap & 1536) >> 10;
@@ -46,7 +46,7 @@ void Block::draw(int x, int y, int z, Style* style)
 {
 	y = y*-1;
 	
-	if(this->slope_type > 0 && this->ground_type != 0) return;
+	if(this->slopeType > 0 && this->groundType != 0) return;
 
 	// temp. block drawing
 	// lid

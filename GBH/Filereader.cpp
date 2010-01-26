@@ -9,12 +9,12 @@ Filereader::Filereader(const char* filename){
 	this->size = file.tellg();
 	file.seekg(0, std::ios::beg);
 
-	this->map_data = new char[size];
-	file.read(map_data,size);
+	this->mapData = new char[size];
+	file.read(mapData,size);
 
 	file.close();
 
-	this->offset = map_data;
+	this->offset = mapData;
 
 	this->file_header = reinterpret_cast<FileHeader*>(this->offset);
 	this->offset += sizeof(FileHeader);
@@ -23,14 +23,14 @@ Filereader::Filereader(const char* filename){
 }
 
 Filereader::~Filereader(){
-	delete this->map_data;
+	delete this->mapData;
 }
 
 Chunk* Filereader::getNextChunk(){
 	Chunk *chk = reinterpret_cast<Chunk*>(malloc(sizeof(Chunk)));
 	
 	ChunkHeader* chk_header; 
-	if(this->offset < this->map_data + this->size){
+	if(this->offset < this->mapData + this->size){
 	
 		chk_header = reinterpret_cast<ChunkHeader*>(this->offset);
 		this->offset += sizeof(ChunkHeader);
