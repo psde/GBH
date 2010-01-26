@@ -25,8 +25,13 @@
 #include <math.h>
 
 // meh
-#include "../../../Gosu/fpsCounter/fpsCounter/fpsCounter.hpp"
-#include "../../../Gosu/Gosu-PostProcessing/Gosu-PostProcessing/Gosu-PostProcessing.hpp"
+#ifdef _MSC_VER
+	#include "../../../Gosu/fpsCounter/fpsCounter/fpsCounter.hpp"
+	#include "../../../Gosu/Gosu-PostProcessing/Gosu-PostProcessing/Gosu-PostProcessing.hpp"
+#else
+	#include "fpsCounter.hpp"
+	#include "Gosu-PostPRocessing.hpp"
+#endif
 
 
 #endif

@@ -4,7 +4,7 @@
 
 using namespace std;
 
-class Window : public Gosu::Window
+class GameWindow : public Gosu::Window
 {
 	private:
 		Gosu::Font *font;
@@ -13,43 +13,55 @@ class Window : public Gosu::Window
 		Style *style;
 		Map *map;
 
-		double x, y, z;
+		double x, y, z, a;
 
 	public:
-		Window()
-		 :	Gosu::Window(1024, 768, false)
+		GameWindow()
+		 :	Gosu::Window(1280, 1024, false)
 		{
 			glewInit();
 			this->font = new Gosu::Font(graphics(), Gosu::defaultFontName(), 20);
 			this->fps = new Gosu::fpsCounter(&graphics(), Gosu::realWidth(graphics())-203, 3, 200, 100, 0.03f);
 
 			this->style = new Style();
-			this->style->loadStyle("data/styles/wil.sty");
+			this->style->loadStyle("data/styles/bil.sty");
 
-			this->map = new Map("data/maps/wil.gmp", this->style);
+			this->map = new Map("data/maps/bil.gmp", this->style);
 
 			this->x = -12;
 			this->y = 30;
 			this->z = -18;
+			this->a = -45;
 		}
 
 		void draw()
 		{
 			graphics().beginGL();
-
+			//glClearDepth(1.0f);
 			glViewport(0, 0, Gosu::realWidth(graphics()), Gosu::realHeight(graphics()));
 
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
-			gluPerspective(45.0f, Gosu::realWidth(graphics())/Gosu::realHeight(graphics()), 1, 300.0f);
-
+			gluPerspective(45.0f, (Gosu::realWidth(graphics())/Gosu::realHeight(graphics())), 1, 300.0f);
+			
 			glMatrixMode(GL_MODELVIEW);
 
-			glRotatef(-45.0, 1, 0, 0);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			glRotatef(this->a, 1, 0, 0);
 			glTranslatef(this->x, this->y, this->z);
 
 			glEnable(GL_TEXTURE_2D);
 
+			// z-ordering - impossible for vertex shader at the moment
+			glEnable(GL_DEPTH_TEST);			
+			glDepthRange(0,1);
+			glDepthFunc(GL_LEQUAL);
+
+			// Alpha-testing - maybe implemented in shader?
+			glAlphaFunc(GL_GREATER, 0.0f);
+			glEnable(GL_ALPHA_TEST);
+			
 			map->draw();
 
 			// Koordinatenkreuz:
@@ -62,7 +74,7 @@ class Window : public Gosu::Window
 			glColor3f(0,1,0);
 			glBegin(GL_LINE_STRIP);
 				glVertex3f(0,0,0);
-				glVertex3f(0,999,0);
+				glVertex3f(0,-999,0);
 			glEnd();
 			glColor3f(0,0,1);
 			glBegin(GL_LINE_STRIP);
@@ -73,7 +85,7 @@ class Window : public Gosu::Window
 
 			graphics().endGL();
 
-			this->font->draw(L"" + boost::lexical_cast<wstring>(this->x) + L", " + boost::lexical_cast<wstring>(this->y) + L", " + boost::lexical_cast<wstring>(this->z), 0, 0, 1);
+			this->font->draw(L"x/y/z/a: " + boost::lexical_cast<wstring>(this->x) + L", " + boost::lexical_cast<wstring>(this->y) + L", " + boost::lexical_cast<wstring>(this->z) + L" @ " + boost::lexical_cast<wstring>(this->a) + L"°", 0, 0, 1);
 
 			fps->updateFPS();
 			fps->draw();
@@ -87,8 +99,11 @@ class Window : public Gosu::Window
 			if(input().down(Gosu::kbDown)) this->y += 1;
 			if(input().down(Gosu::kbUp)) this->y -= 1;
 
-			if(input().down(Gosu::kbPageUp)) this->z += 1;
-			if(input().down(Gosu::kbPageDown)) this->z -= 1;
+			if(input().down(Gosu::kbPageDown)) this->z += 1;
+			if(input().down(Gosu::kbPageUp)) this->z -= 1;
+
+			if(input().down(Gosu::kbW)) this->a += 1;
+			if(input().down(Gosu::kbS)) this->a -= 1;
 
 			map->update();
 		}
@@ -96,13 +111,41 @@ class Window : public Gosu::Window
 		void buttonDown(Gosu::Button button)
 		{
 			if(button == Gosu::kbEscape) close();
+
+			if(button == Gosu::kb1) {
+				delete this->style;
+				delete this->map;
+				this->style = new Style();
+                        	this->style->loadStyle("data/styles/wil.sty");
+
+                        	this->map = new Map("data/maps/wil.gmp", this->style);
+			}
+
+                        if(button == Gosu::kb2) {
+                                delete this->style;
+                                delete this->map;
+                                this->style = new Style();
+                                this->style->loadStyle("data/styles/ste.sty");
+
+                                this->map = new Map("data/maps/ste.gmp", this->style);
+                        }
+
+                        if(button == Gosu::kb3) {
+                                delete this->style;
+                                delete this->map;
+                                this->style = new Style();
+                                this->style->loadStyle("data/styles/bil.sty");
+
+                                this->map = new Map("data/maps/bil.gmp", this->style);
+                        }
+
 		}
 };
 
 int main(int argc, char* argv[])
 {
 
-    Window win;
+    GameWindow win;
     win.show();
 
 	return 0;

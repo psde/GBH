@@ -60,8 +60,8 @@ bool Style::loadStyle(const char* style){
 				glGenTextures(1, &this->tiles[tile_index].gl_i);
 				glBindTexture(GL_TEXTURE_2D, this->tiles[tile_index].gl_i);
 				//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-				//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-				//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, 1);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -71,8 +71,8 @@ bool Style::loadStyle(const char* style){
 				glGenTextures(1, &this->tiles_flat[tile_index].gl_i);
 				glBindTexture(GL_TEXTURE_2D, this->tiles_flat[tile_index].gl_i);
 				//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-				//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-				//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, 1);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -97,10 +97,6 @@ int Style::getPaletteValue(int palette_index, short color_index){
 
 
 unsigned Style::getTexture(int texture, bool flat){
-	flat = true;
-	if(flat){
-		return this->tiles_flat[texture].gl_i;	
-	}else{
-		return this->tiles[texture].gl_i;	
-	}
+	if(flat) return this->tiles_flat[texture].gl_i;	
+	return this->tiles[texture].gl_i;	
 };

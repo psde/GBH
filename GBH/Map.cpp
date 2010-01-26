@@ -40,16 +40,30 @@ Map::Map(const char *map, Style* style){
 
 				for(i=0;i<(column->height-column->offset);i++){
 					this->city_sphere[x][y][i+column->offset] = new Block(c_map.blocks[column->blockd[i]]);
-					this->city_sphere[x][y][i+column->offset]->buildVBOs(-1,-1,-1, style);
+					//this->city_sphere[x][y][i+column->offset]->buildVBOs(-1,-1,-1, style);
 				}
 			}
 		}
 	}
+	delete reader;
+}
+
+Map::~Map()
+{
+        for(int z=0;z<7;z++){
+                for(int x=0;x<255;x++){
+                        for(int y=0;y<255;y++){
+                                if(!this->city_sphere[x][y][z]->isZero()){
+                                        delete this->city_sphere[x][y][z];
+                                }
+                        }
+                }
+        }
 }
 
 void Map::draw()
 {
-	int _drawrange = 125;
+	int _drawrange = 100;
 	int _start = 0;
 	for(int z=0;z<7;z++){
 		for(int x=_start;x<_drawrange+_start;x++){

@@ -1,12 +1,12 @@
 #ifndef BLOCK_HPP
 #define BLOCK_HPP
 
-#include "BlockReader.hpp"
+//#include "BlockReader.hpp"
 #include "Gta2Formats.hpp"
 #include "Style.hpp"
 #include "main.hpp"
 
-struct _block_face{
+struct block_face{
 	short tile_number;
 	short lightning;
 	short wall;
@@ -19,7 +19,7 @@ struct _block_face{
 class Block {
 private:
 
-	static BlockReader* block_reader;
+	//static BlockReader* block_reader;
 
 	//VBO* vbos[5];
 	int numVBOs;
@@ -29,7 +29,9 @@ private:
 
 	bool VBOsBuild;
 
-	_block_face *faces[5];
+	static block_face* getBlockFace(int bitmap);
+	block_face *faces[5];
+	
 public:
 	BlockInfo block_info;
 	Block(BlockInfo blck);
@@ -37,7 +39,7 @@ public:
 
 	bool isZero();
 
-	void buildVBOs(int, int, int, Style*);
+	void buildVBOs(int, int, int, Style*); // deprecated
 	void draw(int x, int y, int z, Style* style);
 
 	//int getNumVBOs();
