@@ -62,7 +62,7 @@ void Block::draw(int x, int y, int z, Style* style)
 		}
 	glPopMatrix();
 
-	return;
+	//return;
 	y = y*-1;
 	
 	if(this->slopeType > 0 && this->groundType != 0) return;

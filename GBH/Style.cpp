@@ -1,7 +1,8 @@
 #include "include.hpp"
 
-bool Style::loadStyle(const char* style){
-
+Style::Style(const char* style)
+{
+	
 	Filereader* reader = new Filereader(style);
 	Chunk* chk;
 	Chunk* tile_data;
@@ -16,8 +17,6 @@ bool Style::loadStyle(const char* style){
 			this->pal_index = reinterpret_cast<short*>(offset);
 			phys_palette = reinterpret_cast<short*>(offset);
 			_palette_index.phys_palette = reinterpret_cast<short*>(offset);
-
-
 		}
 
 		if(strncmp(chk->header->type,"PALB",4) == 0) {
@@ -32,9 +31,9 @@ bool Style::loadStyle(const char* style){
 		if(strncmp(chk->header->type,"TILE",4) == 0) {
 			tile_data = chk;
 		}
-
 	}
 
+	this->textureCount = 0;
 	const int page_size = 256 * 256;
 	for(int page_num = 0; page_num < 62; page_num++)
 	{
@@ -78,6 +77,8 @@ bool Style::loadStyle(const char* style){
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 64, 64, 0, GL_BGRA, GL_UNSIGNED_BYTE, tile);
 				//gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, 64, 64, GL_BGRA, GL_UNSIGNED_BYTE, tile);
+
+				this->textureCount++;
 			}
 		}
 	}
@@ -85,8 +86,15 @@ bool Style::loadStyle(const char* style){
 	delete[] chk;
 	delete[] tile_data;
 	delete[] palette_data;
+}
 
-	return true;
+Style::~Style()
+{
+	for(int i=0; i<textureCount;i++)
+	{
+		glDeleteTextures(1, &this->tiles[i].gl_i);
+		glDeleteTextures(1, &this->tiles_flat[i].gl_i);
+	}
 }
 
 int Style::getPaletteValue(int palette_index, short color_index){

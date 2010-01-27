@@ -23,8 +23,11 @@ private:
 	PaletteBase* palette_base;
 	int* _palette_data;
 
+	int textureCount;
+
 public:
-	bool loadStyle(const char* style);
+	Style(const char* style);
+	~Style();
 
 	int getPaletteValue(int, short);
 

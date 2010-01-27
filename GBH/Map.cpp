@@ -50,6 +50,7 @@ Map::Map(const char *map, Style* style){
 
 Map::~Map()
 {
+	//delete[] this->citySphere;
     for(int z=0;z<7;z++){
 		for(int x=0;x<255;x++){
 			for(int y=0;y<255;y++){

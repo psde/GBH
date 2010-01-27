@@ -8,8 +8,8 @@ class GameWindow : public Gosu::Window
 		Gosu::Font *font;
 		Gosu::fpsCounter *fps;
 
-		Style *style;
-		Map *map;
+		Style* style;
+		Map* map;
 
 		double x, y, z, a;
 
@@ -21,8 +21,7 @@ class GameWindow : public Gosu::Window
 			this->font = new Gosu::Font(graphics(), Gosu::defaultFontName(), 20);
 			this->fps = new Gosu::fpsCounter(&graphics(), Gosu::realWidth(graphics())-203, 3, 200, 100, 0.03f);
 
-			this->style = new Style();
-			this->style->loadStyle("data/styles/wil.sty");
+			this->style = new Style("data/styles/wil.sty");
 
 			this->map = new Map("data/maps/wil.gmp", this->style);
 
@@ -115,29 +114,23 @@ class GameWindow : public Gosu::Window
 			if(button == Gosu::kb1) {
 				delete this->style;
 				delete this->map;
-				this->style = new Style();
-                        	this->style->loadStyle("data/styles/wil.sty");
-
-                        	this->map = new Map("data/maps/wil.gmp", this->style);
+				this->style = new Style("data/styles/wil.sty");
+            	this->map = new Map("data/maps/wil.gmp", this->style);
 			}
 
-                        if(button == Gosu::kb2) {
-                                delete this->style;
-                                delete this->map;
-                                this->style = new Style();
-                                this->style->loadStyle("data/styles/ste.sty");
+            if(button == Gosu::kb2) {
+				delete this->style;
+				delete this->map;
+				this->style = new Style("data/styles/ste.sty");
+                this->map = new Map("data/maps/ste.gmp", this->style);
+            }
 
-                                this->map = new Map("data/maps/ste.gmp", this->style);
-                        }
-
-                        if(button == Gosu::kb3) {
-                                delete this->style;
-                                delete this->map;
-                                this->style = new Style();
-                                this->style->loadStyle("data/styles/bil.sty");
-
-                                this->map = new Map("data/maps/bil.gmp", this->style);
-                        }
+            if(button == Gosu::kb3) {
+				delete this->style;
+				delete this->map;
+				this->style = new Style("data/styles/bil.sty");
+                this->map = new Map("data/maps/bil.gmp", this->style);
+            }
 
 		}
 };
