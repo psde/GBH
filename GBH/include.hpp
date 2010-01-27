@@ -40,8 +40,8 @@
 #include "style.hpp"
 #include "vbo.hpp"
 #include "block.hpp"
-#include "map.hpp"
 #include "map_part.hpp"
+#include "map.hpp"
 
 
 #endif

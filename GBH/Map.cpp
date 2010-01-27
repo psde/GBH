@@ -40,17 +40,46 @@ Map::Map(const char *map, Style* style){
 
 				for(i=0;i<(column->height-column->offset);i++){
 					this->citySphere[x][y][i+column->offset] = new Block(c_map.blocks[column->blockd[i]]);
+
+					BlockFace face = Block::getBlockFace(c_map.blocks[column->blockd[i]].lid);
+					int tex = face.tile_number + (face.flat ? 1000 : 0);
+
+					if(face.tile_number > 0) {
+						std::vector<Vertex> vertices(4);
+						int z = i+column->offset;
+						vertices[0].coord = Vector3(x + 0.0f, -y + 0.0f, z + 0.0f);
+						vertices[1].coord = Vector3(x + 1.0f, -y + 0.0f, z + 0.0f);
+						vertices[2].coord = Vector3(x + 1.0f, -y + 1.0f, z + 0.0f);
+						vertices[3].coord = Vector3(x + 0.0f, -y + 1.0f, z + 0.0f);
+
+						vertices[0].texcoord = Vector2(0, 0);
+						vertices[1].texcoord = Vector2(1, 0);
+						vertices[2].texcoord = Vector2(1, 1);
+						vertices[3].texcoord = Vector2(0, 1);
+						for(std::vector<Vertex>::iterator it = vertices.begin(); it != vertices.end(); it++)
+						{							
+							//it->texcoord = Matrix4x4::translation(Vector3(-0.5, -0.5, 0)) * it->texcoord;
+							//it->texcoord = Matrix4x4::rotationMatrixZ(face.rotation_code * 90 ) * it->texcoord;
+							it->texcoord = Matrix4x4::translation(Vector3(0.5, 0.5, 0)) * it->texcoord;
+						}
+
+						geom[tex].pushVertex(vertices[0]);
+						geom[tex].pushVertex(vertices[1]);
+						geom[tex].pushVertex(vertices[2]);
+						geom[tex].pushVertex(vertices[3]);
+					}
 				}
 			}
 		}
 		free(chk);
 	}
 	delete reader;
+
+
 }
 
 Map::~Map()
 {
-	//delete[] this->citySphere;
     for(int z=0;z<7;z++){
 		for(int x=0;x<255;x++){
 			for(int y=0;y<255;y++){
@@ -64,6 +93,19 @@ Map::~Map()
 
 void Map::draw()
 {
+	for(Part::iterator it = geom.begin(); it != geom.end(); it++)
+	{
+		int tex = (it->first > 1000 ? it->first - 1000 : it->first);
+		glBindTexture(GL_TEXTURE_2D, this->style->getTexture(tex, (it->first > 1000)));
+		it->second.draw();
+		/*if(it->first < 992)
+		{
+			glBindTexture(
+			//_style.getTexture(it->first)->bind();
+			//it->second.draw();
+		}*/
+	}
+	/*
 	int _drawrange = 100;
 	int _start = 0;
 	for(int z=0;z<7;z++){
@@ -74,7 +116,7 @@ void Map::draw()
 				}
 			}
 		}
-	}
+	}*/
 }
 
 void Map::update()

@@ -24,13 +24,14 @@ class Block {
 		short groundType;
 		short slopeType;
 
-		static BlockFace *getBlockFace(int bitmap);
-		BlockFace *blockFaces[5];
+		BlockFace blockFaces[5];
 		BlockInfo block_info;
 
 		Face *faces[5];
 		
 	public:
+		static BlockFace getBlockFace(int bitmap);
+
 		Block(BlockInfo blck);
 		~Block();
 

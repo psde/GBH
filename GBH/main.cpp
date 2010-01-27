@@ -39,7 +39,7 @@ class GameWindow : public Gosu::Window
 
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
-			gluPerspective(45.0f, (Gosu::realWidth(graphics())/Gosu::realHeight(graphics())), 1, 300.0f);
+			gluPerspective(45.0f, (Gosu::realWidth(graphics())/Gosu::realHeight(graphics())), 1.0f, 700.0f);
 			
 			glMatrixMode(GL_MODELVIEW);
 

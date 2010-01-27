@@ -32,7 +32,7 @@ void MapPart::draw()
 	this->texcoordVbo->bind();
 	glTexCoordPointer(2, GL_FLOAT, 0, 0);
 
-	glDrawArrays(GL_TRIANGLES, 0, coord.size());
+	glDrawArrays(GL_QUADS, 0, coord.size());
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);

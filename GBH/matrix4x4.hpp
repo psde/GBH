@@ -46,7 +46,7 @@ class Matrix4x4
 						   f[0][1] * vec.x + f[1][1] * vec.y + f[2][1]);
 		}
 
-		Matrix4x4 rotationMatrixX(const float a)
+		static Matrix4x4 rotationMatrixX(const float a)
 		{
 			return Matrix4x4(Vector4(1, 0, 0, 0),
 							 Vector4(0,  cos(a), sin(a), 0),
@@ -54,7 +54,7 @@ class Matrix4x4
 							 Vector4(0, 0, 0, 1));
 		}
 
-		Matrix4x4 rotationMatrixY(const float a)
+		static Matrix4x4 rotationMatrixY(const float a)
 		{
 			return Matrix4x4(Vector4(cos(a), 0, -sin(a), 0),
 							 Vector4(0, 1, 0, 0),
@@ -62,12 +62,20 @@ class Matrix4x4
 							 Vector4(0, 0, 0, 1));
 		}
 
-		Matrix4x4 rotationMatrixZ(const float a)
+		static Matrix4x4 rotationMatrixZ(const float a)
 		{
 			return Matrix4x4(Vector4( cos(a), sin(a), 0, 0),
 							 Vector4(-sin(a), cos(a), 0, 0),
 							 Vector4(0, 0, 1, 0),
 							 Vector4(0, 0, 0, 1));
+		}
+
+		static Matrix4x4 translation(const Vector3 &vec)
+		{
+			return Matrix4x4(Vector4(1, 0, 0, 0),
+							 Vector4(0, 1, 0, 0),
+							 Vector4(0, 0, 1, 0),
+							 Vector4(vec.x, vec.y, vec.z, 1));
 		}
 
 };
