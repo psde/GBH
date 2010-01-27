@@ -20,7 +20,7 @@ class Vector2
 			: x(vec.x), y(vec.y)
 		{ }
 
-		Vector2 &operator+=(const Vector2 &vec)
+		Vector2 &operator+=(const Vector2 &vec) 
 		{
 			x += vec.x;
 			y += vec.y;

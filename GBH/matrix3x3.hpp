@@ -22,7 +22,7 @@ class Matrix3x3
 			f[2][0] = c.x; f[2][1] = c.y; f[2][2] = c.z;
 		}
 
-		Matrix3x3 operator*(const Matrix3x3 &mat)
+		Matrix3x3 operator*(const Matrix3x3 &mat) const
 		{
 			Matrix3x3 newMatrix;
 			for(int i = 0; i < 3; i++)
@@ -32,7 +32,7 @@ class Matrix3x3
 			return newMatrix;
 		}
 
-		Vector3 operator*(const Vector3 &vec)
+		Vector3 operator*(const Vector3 &vec) const
 		{
 			return Vector3(f[0][0] * vec.x + f[1][0] * vec.x + f[2][0] * vec.x,
 						   f[0][1] * vec.y + f[1][1] * vec.y + f[2][1] * vec.y,

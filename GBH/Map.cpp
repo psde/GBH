@@ -56,11 +56,15 @@ Map::Map(const char *map, Style* style){
 						vertices[1].texcoord = Vector2(1, 0);
 						vertices[2].texcoord = Vector2(1, 1);
 						vertices[3].texcoord = Vector2(0, 1);
+
+						// THIS is weird.
+						if(face.flip == 0)
+							for(std::vector<Vertex>::iterator it = vertices.begin(); it != vertices.end(); it++)
+								it->texcoord = Matrix4x4::scale(Vector3(-1, 1, 1)) * it->texcoord;
+
 						for(std::vector<Vertex>::iterator it = vertices.begin(); it != vertices.end(); it++)
 						{							
-							//it->texcoord = Matrix4x4::translation(Vector3(-0.5, -0.5, 0)) * it->texcoord;
-							//it->texcoord = Matrix4x4::rotationMatrixZ(face.rotation_code * 90 ) * it->texcoord;
-							it->texcoord = Matrix4x4::translation(Vector3(0.5, 0.5, 0)) * it->texcoord;
+							it->texcoord = Matrix4x4::rotationMatrixZ(Math::degreesToRadians(180 - (face.rotation_code * 90))) * it->texcoord;
 						}
 
 						geom[tex].pushVertex(vertices[0]);

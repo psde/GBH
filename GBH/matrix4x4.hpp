@@ -23,7 +23,7 @@ class Matrix4x4
 			f[3][0] = d.x; f[3][1] = d.y; f[3][2] = d.z; f[3][3] = d.w;
 		}
 
-		Matrix4x4 operator*(const Matrix4x4 &mat)
+		Matrix4x4 operator*(const Matrix4x4 &mat) const
 		{
 			Matrix4x4 newMatrix;
 			for(int i = 0; i < 4; i++)
@@ -33,14 +33,22 @@ class Matrix4x4
 			return newMatrix;
 		}
 
-		Vector3 operator*(const Vector3 &vec)
+		Vector4 operator*(const Vector4 &vec) const
+		{
+			return Vector4(f[0][0] * vec.x + f[1][0] * vec.y + f[2][0] * vec.z + f[3][0] * vec.w,
+						   f[0][1] * vec.x + f[1][1] * vec.y + f[2][1] * vec.z + f[3][1] * vec.w,
+						   f[0][2] * vec.x + f[1][2] * vec.y + f[2][2] * vec.z + f[3][2] * vec.w,
+						   f[0][3] * vec.x + f[1][3] * vec.y + f[2][3] * vec.z + f[3][3] * vec.w);
+		}
+
+		Vector3 operator*(const Vector3 &vec) const
 		{
 			return Vector3(f[0][0] * vec.x + f[1][0] * vec.y + f[2][0] * vec.z + f[3][0],
 						   f[0][1] * vec.x + f[1][1] * vec.y + f[2][1] * vec.z + f[3][1],
 						   f[0][2] * vec.x + f[1][2] * vec.y + f[2][2] * vec.z + f[3][2]);
 		}
 
-		Vector2 operator*(const Vector2 &vec)
+		Vector2 operator*(const Vector2 &vec) const
 		{
 			return Vector2(f[0][0] * vec.x + f[1][0] * vec.y + f[2][0],
 						   f[0][1] * vec.x + f[1][1] * vec.y + f[2][1]);
@@ -76,6 +84,14 @@ class Matrix4x4
 							 Vector4(0, 1, 0, 0),
 							 Vector4(0, 0, 1, 0),
 							 Vector4(vec.x, vec.y, vec.z, 1));
+		}
+
+		static Matrix4x4 scale(const Vector3 &vec)
+		{
+			return Matrix4x4(Vector4(vec.x, 0, 0, 0),
+							 Vector4(0, vec.y, 0, 0),
+							 Vector4(0, 0, vec.z, 0),
+							 Vector4(0, 0, 0, 1));
 		}
 
 };

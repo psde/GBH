@@ -57,7 +57,7 @@ class GameWindow : public Gosu::Window
 			glDepthFunc(GL_LEQUAL);
 
 			// Alpha-testing
-			glAlphaFunc(GL_GREATER, 0.75f);
+			glAlphaFunc(GL_GREATER, 0.4f);
 			glEnable(GL_ALPHA_TEST);
 			
 			map->draw();
