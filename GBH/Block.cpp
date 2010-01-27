@@ -6,20 +6,19 @@ Block::Block(BlockInfo blck){
 	this->groundType = this->block_info.slope_type & 3;
 	this->slopeType = (this->block_info.slope_type & 252) >> 2;
 
-    this->faces[0] = Block::getBlockFace(this->block_info.lid);
-    this->faces[1] = Block::getBlockFace(this->block_info.top);
-    this->faces[2] = Block::getBlockFace(this->block_info.right);
-    this->faces[3] = Block::getBlockFace(this->block_info.bottom);
-    this->faces[4] = Block::getBlockFace(this->block_info.left);
+    this->blockFaces[0] = Block::getBlockFace(this->block_info.lid);
+    this->blockFaces[1] = Block::getBlockFace(this->block_info.top);
+    this->blockFaces[2] = Block::getBlockFace(this->block_info.right);
+    this->blockFaces[3] = Block::getBlockFace(this->block_info.bottom);
+    this->blockFaces[4] = Block::getBlockFace(this->block_info.left);
 }
 
 Block::~Block()
 {
-	for(int i=0;i<=4;i++)
-		delete this->faces[i];
+	for(int i=0;i<=4;i++) delete this->blockFaces[i];
 }
 
-BlockFace* Block::getBlockFace(int bitmap)
+BlockFace *Block::getBlockFace(int bitmap)
 {
 	BlockFace* temp = new BlockFace();
 
@@ -46,16 +45,21 @@ bool Block::isZero(){
 void Block::draw(int x, int y, int z, Style* style)
 {
 	glPushMatrix();
-		glEnableClientState(GL_VERTEX_ARRAY);
-		//bind
-		glTexCoordPointer(3, GL_FLOAT, 0, 0);
+		//glTranslatef(x, y, z);
 
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		//bind
-		glTexCoordPointer(2, GL_FLOAT, 0, 0);
+		for(int i=0;i<=4;i++)
+		{
+			glEnableClientState(GL_VERTEX_ARRAY);
+			//bind
+			glTexCoordPointer(3, GL_FLOAT, 0, 0);
 
-		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		glDisableClientState(GL_VERTEX_ARRAY);
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+			//bind
+			glTexCoordPointer(2, GL_FLOAT, 0, 0);
+
+			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+			glDisableClientState(GL_VERTEX_ARRAY);
+		}
 	glPopMatrix();
 
 
@@ -66,9 +70,9 @@ void Block::draw(int x, int y, int z, Style* style)
 
 	// temp. block drawing
 	// lid
-	if(this->faces[0]->tile_number > 0)
+	if(this->blockFaces[0]->tile_number > 0)
 	{
-		glBindTexture(GL_TEXTURE_2D, style->getTexture(this->faces[0]->tile_number, this->faces[0]->flat));
+		glBindTexture(GL_TEXTURE_2D, style->getTexture(this->blockFaces[0]->tile_number, this->blockFaces[0]->flat));
 		glBegin(GL_QUADS);
 			glTexCoord2f(0.0f, 1.0f);
 			glVertex3f(x + 0.0f, y + 0.0f, z + 1.0f);
@@ -85,9 +89,9 @@ void Block::draw(int x, int y, int z, Style* style)
 	}
 	
 	// top
-	if(this->faces[1]->tile_number > 0)
+	if(this->blockFaces[1]->tile_number > 0)
 	{
-		glBindTexture(GL_TEXTURE_2D, style->getTexture(this->faces[1]->tile_number, this->faces[1]->flat));
+		glBindTexture(GL_TEXTURE_2D, style->getTexture(this->blockFaces[1]->tile_number, this->blockFaces[1]->flat));
 	    glBegin(GL_QUADS);
 			glTexCoord2f(0.0f, 1.0f);
     		glVertex3f(x + 0.0f, y + 1.0f, z + 0.0f);
@@ -104,9 +108,9 @@ void Block::draw(int x, int y, int z, Style* style)
 	}
 
 	// bottom
-	if(this->faces[3]->tile_number  > 0)
+	if(this->blockFaces[3]->tile_number  > 0)
 	{	
-		glBindTexture(GL_TEXTURE_2D, style->getTexture(this->faces[3]->tile_number, this->faces[3]->flat));
+		glBindTexture(GL_TEXTURE_2D, style->getTexture(this->blockFaces[3]->tile_number, this->blockFaces[3]->flat));
 		glBegin(GL_QUADS);
 			glTexCoord2f(0.0f, 1.0f);
 			glVertex3f(x + 0.0f, y + 0.0f, z + 0.0f);
@@ -123,9 +127,9 @@ void Block::draw(int x, int y, int z, Style* style)
 	}
 
 	// left
-	if(this->faces[4]->tile_number > 0)
+	if(this->blockFaces[4]->tile_number > 0)
 	{
-		glBindTexture(GL_TEXTURE_2D, style->getTexture(this->faces[4]->tile_number, this->faces[4]->flat));
+		glBindTexture(GL_TEXTURE_2D, style->getTexture(this->blockFaces[4]->tile_number, this->blockFaces[4]->flat));
 		glBegin(GL_QUADS);
 			glTexCoord2f(0.0f, 1.0f);
 			glVertex3f(x + 0.0f, y + 0.0f, z + 0.0f);
@@ -142,9 +146,9 @@ void Block::draw(int x, int y, int z, Style* style)
 	}
 
 	// right
-	if(this->faces[2]->tile_number > 0)
+	if(this->blockFaces[2]->tile_number > 0)
 	{
-    	glBindTexture(GL_TEXTURE_2D, style->getTexture(this->faces[2]->tile_number, this->faces[2]->flat));
+    	glBindTexture(GL_TEXTURE_2D, style->getTexture(this->blockFaces[2]->tile_number, this->blockFaces[2]->flat));
    	 	glBegin(GL_QUADS);
     		glTexCoord2f(0.0f, 1.0f);
     		glVertex3f(x + 1.0f, y + 0.0f, z + 0.0f);

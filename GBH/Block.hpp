@@ -16,24 +16,30 @@ struct BlockFace{
 	short rotation_code;
 };
 
-class Block {
-private:
-	short groundType;
-	short slopeType;
-
-	static BlockFace* getBlockFace(int bitmap);
-	BlockFace *faces[5];
-	BlockInfo block_info;
-
+struct Face
+{
+	short texture;
 	VBO *vertices, *texcoord;
-	
-public:
-	Block(BlockInfo blck);
-	~Block();
+};
 
-	bool isZero();
+class Block {
+	private:
+		short groundType;
+		short slopeType;
 
-	void draw(int x, int y, int z, Style* style);
+		static BlockFace *getBlockFace(int bitmap);
+		BlockFace *blockFaces[5];
+		BlockInfo block_info;
+
+		Face *faces[5];
+		
+	public:
+		Block(BlockInfo blck);
+		~Block();
+
+		bool isZero();
+
+		void draw(int x, int y, int z, Style* style);
 };
 
 #endif
