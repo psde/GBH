@@ -1,6 +1,8 @@
 #ifndef VECTOR2_HPP
 #define VECTOR2_HPP
 
+#include "vecmat.hpp"
+
 class Vector2
 {
 	public:

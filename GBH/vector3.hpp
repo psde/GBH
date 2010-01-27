@@ -1,7 +1,7 @@
 #ifndef VECTOR3_HPP
 #define VECTOR3_HPP
 
-#include "Vector2.hpp"
+#include "vecmat.hpp"
 
 class Vector3
 {
@@ -108,9 +108,9 @@ class Vector3
 
 		Vector3 cross(Vector3 &vec)
 		{	
-			return Vector3(y * vec.z - z * vec.y,
-						   z * vec.x - x * vec.z,
-						   x * vec.y - y * vec.x);
+			return Vector3(	y * vec.z - z * vec.y,
+							z * vec.x - x * vec.z,
+							x * vec.y - y * vec.x);
 		}
 
 };

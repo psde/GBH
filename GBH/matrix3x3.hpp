@@ -1,7 +1,7 @@
 #ifndef MATRIX3X3_HPP
 #define MATRIX3X3_HPP
 
-#include "vector3.hpp"
+#include "vecmat.hpp"
 
 class Matrix3x3
 {

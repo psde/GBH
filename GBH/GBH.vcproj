@@ -251,11 +251,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\vecmat.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\vector2.hpp"
 				>
 			</File>
 			<File
 				RelativePath=".\vector3.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Vector4.hpp"
 				>
 			</File>
 		</Filter>

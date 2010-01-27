@@ -33,10 +33,7 @@
 	#include "Gosu-PostPRocessing.hpp"
 #endif
 
-#include "vector2.hpp"
-#include "vector3.hpp"
-#include "matrix3x3.hpp"
-#include "matrix4x4.hpp"
+#include "vecmat.hpp"
 
 #include "gta2formats.hpp"
 #include "filereader.hpp"
