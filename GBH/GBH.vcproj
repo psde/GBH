@@ -194,14 +194,6 @@
 				RelativePath=".\vbo.cpp"
 				>
 			</File>
-			<File
-				RelativePath=".\vector2.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\vector3.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -240,6 +232,24 @@
 				RelativePath=".\vbo.hpp"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+			>
+		</Filter>
+		<Filter
+			Name="vector/matrix stuff"
+			>
+			<File
+				RelativePath=".\matrix3x3.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\matrix4x4.hpp"
+				>
+			</File>
 			<File
 				RelativePath=".\vector2.hpp"
 				>
@@ -248,12 +258,6 @@
 				RelativePath=".\vector3.hpp"
 				>
 			</File>
-		</Filter>
-		<Filter
-			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
-			>
 		</Filter>
 	</Files>
 	<Globals>

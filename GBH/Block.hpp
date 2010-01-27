@@ -1,10 +1,7 @@
 #ifndef BLOCK_HPP
 #define BLOCK_HPP
 
-#include "Gta2Formats.hpp"
-#include "Style.hpp"
-#include "VBO.hpp"
-#include "main.hpp"
+#include "include.hpp"
 
 struct BlockFace{
 	short tile_number;

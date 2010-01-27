@@ -1,8 +1,7 @@
 #ifndef MAP_HPP
 #define MAP_HPP
 
-#include "Block.hpp"
-#include "main.hpp"
+#include "include.hpp"
 
 class Map
 {

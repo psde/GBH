@@ -1,8 +1,7 @@
 #ifndef FILEREADER_HPP
 #define FILEREADER_HPP
 
-#include "main.hpp"
-#include "Gta2Formats.hpp"
+#include "include.hpp"
 
 class Filereader{
 	private:

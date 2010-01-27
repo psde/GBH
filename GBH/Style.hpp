@@ -1,9 +1,7 @@
 #ifndef GTA2STYLE_HPP
 #define GTA2STYLE_HPP
 
-#include "main.hpp"
-#include "Gta2Formats.hpp"
-#include "Filereader.hpp"
+#include "include.hpp"
 
 struct PaletteIndex {
 	short* phys_palette;
