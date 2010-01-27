@@ -1,19 +1,7 @@
 #ifndef VBO_HPP
 #define VBO_HPP
 
-#include "main.hpp"
-
-
-struct Vertex3 {
-	float x;
-	float y;
-	float z;
-};
-
-struct Vertex2 {
-	float x;
-	float y;
-};
+#include "include.hpp"
 
 class VBO
 {

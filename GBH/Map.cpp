@@ -1,4 +1,4 @@
-#include "Map.hpp"
+#include "include.hpp"
 
 Map::Map(const char *map, Style* style){
 	this->style = style;
@@ -40,7 +40,6 @@ Map::Map(const char *map, Style* style){
 
 				for(i=0;i<(column->height-column->offset);i++){
 					this->citySphere[x][y][i+column->offset] = new Block(c_map.blocks[column->blockd[i]]);
-					//this->city_sphere[x][y][i+column->offset]->buildVBOs(-1,-1,-1, style);
 				}
 			}
 		}
@@ -64,7 +63,6 @@ Map::~Map()
 
 void Map::draw()
 {
-
 	int _drawrange = 100;
 	int _start = 0;
 	for(int z=0;z<7;z++){

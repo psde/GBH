@@ -1,4 +1,4 @@
-#include "Style.hpp"
+#include "include.hpp"
 
 bool Style::loadStyle(const char* style){
 

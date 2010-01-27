@@ -171,11 +171,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\Block.cpp"
+				RelativePath=".\block.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\Filereader.cpp"
+				RelativePath=".\filereader.cpp"
 				>
 			</File>
 			<File
@@ -183,15 +183,23 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Map.cpp"
+				RelativePath=".\map.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\Style.cpp"
+				RelativePath=".\style.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\VBO.cpp"
+				RelativePath=".\vbo.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\vector2.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\vector3.cpp"
 				>
 			</File>
 		</Filter>
@@ -201,31 +209,43 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\Block.hpp"
+				RelativePath=".\block.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\Filereader.hpp"
+				RelativePath=".\filereader.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\Gta2Formats.hpp"
+				RelativePath=".\gta2formats.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\main.hpp"
+				RelativePath=".\include.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\Map.hpp"
+				RelativePath=".\map.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\Style.hpp"
+				RelativePath=".\map_part.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\VBO.hpp"
+				RelativePath=".\style.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\vbo.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\vector2.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\vector3.hpp"
 				>
 			</File>
 		</Filter>

@@ -1,4 +1,4 @@
-#include "Block.hpp"
+#include "include.hpp"
 
 Block::Block(BlockInfo blck){
 	this->block_info = blck;
@@ -61,7 +61,6 @@ void Block::draw(int x, int y, int z, Style* style)
 			glDisableClientState(GL_VERTEX_ARRAY);
 		}
 	glPopMatrix();
-
 
 	return;
 	y = y*-1;

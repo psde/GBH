@@ -1,4 +1,4 @@
-#include "Filereader.hpp"
+#include "include.hpp"
 
 Filereader::Filereader(const char* filename){
 	ifstream file (filename, ios::in|ios::binary|ios::ate);

@@ -1,6 +1,4 @@
-#include "main.hpp"
-#include "Style.hpp"
-#include "Map.hpp"
+#include "include.hpp"
 
 using namespace std;
 
@@ -53,8 +51,7 @@ class GameWindow : public Gosu::Window
 			glTranslatef(this->x, this->y, this->z);
 
 			glEnable(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D, 0);
-
+			
 			// z-ordering
 			glEnable(GL_DEPTH_TEST);			
 			glDepthRange(0,1);
@@ -67,6 +64,7 @@ class GameWindow : public Gosu::Window
 			map->draw();
 
 			// Koordinatenkreuz:
+			glDisable(GL_TEXTURE_2D);
 			glLineWidth(5);
 			glColor3f(1,0,0);
 			glBegin(GL_LINE_STRIP);
