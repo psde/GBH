@@ -16,7 +16,7 @@ class Vector2
 			: x(x), y(y)
 		{ }
 		
-		Vector2(Vector2 &vec)
+		Vector2(const Vector2 &vec)
 			: x(vec.x), y(vec.y)
 		{ }
 
@@ -80,6 +80,13 @@ class Vector2
 		Vector2 operator/(const Vector2 &vec)
 		{
 			return Vector2(x / vec.x, y / vec.y);
+		}
+
+		Vector2 &operator=(const Vector2 &vec)
+		{
+			x = vec.x;
+			y = vec.y;
+			return *this;
 		}
 };
 

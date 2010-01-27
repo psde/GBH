@@ -24,7 +24,7 @@ class Vector4
 			: x(vec.x), y(vec.y), z(vec.z), w(w)
 		{ }
 
-		Vector4(Vector4 &vec)
+		Vector4(const Vector4 &vec)
 			: x(vec.x), y(vec.y), z(vec.z), w(vec.w)
 		{ }
 

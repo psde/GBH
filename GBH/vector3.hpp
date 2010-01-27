@@ -12,11 +12,7 @@ class Vector3
 			: x(0.0f), y(0.0f), z(0.0f)
 		{ }
 
-		Vector3(Vector2 &vec)
-			: x(vec.x), y(vec.y), z(0.0f)
-		{ }
-
-		Vector3(Vector2 &vec, float z)
+		Vector3(Vector2 &vec, float z = 0.0f)
 			: x(vec.x), y(vec.y), z(z)
 		{ }
 
@@ -24,7 +20,7 @@ class Vector3
 			: x(x), y(y), z(z)
 		{ }
 
-		Vector3(Vector3 &vec)
+		Vector3(const Vector3 &vec)
 			: x(vec.x), y(vec.y), z(vec.z)
 		{ }
 
@@ -94,6 +90,14 @@ class Vector3
 		Vector3 operator/(const Vector3 &vec)
 		{
 			return Vector3(x / vec.x, y / vec.y, z / vec.z);
+		}
+
+		Vector3 &operator=(const Vector3 &vec)
+		{
+			x = vec.x;
+			y = vec.y;
+			z = vec.z;
+			return *this;
 		}
 
 		float sum()

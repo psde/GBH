@@ -4,19 +4,26 @@
 #include "include.hpp"
 
 struct Vertex {
-	Vector3 position;
-	Vector3 normal;
+	Vector3 coord;
 	Vector2 texcoord;
 };
 
 class MapPart
 {
 	private:
-		boost::shared_ptr<VBO> vertices;
-		boost::shared_ptr<VBO> texcoord;
+		int lastModified, lastUpdate;
+
+		std::vector<Vector3> coord;
+		std::vector<Vector2> texcoord;
+
+		boost::shared_ptr<VBO> coordVbo;
+		boost::shared_ptr<VBO> texcoordVbo;
 
 	public:
+		MapPart();
+
 		void pushVertex(Vertex &vert);
+		void draw();
 };
 
 #endif

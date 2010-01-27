@@ -187,11 +187,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\style.cpp"
+				RelativePath=".\map_part.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\vbo.cpp"
+				RelativePath=".\style.cpp"
 				>
 			</File>
 		</Filter>
