@@ -37,3 +37,8 @@ void MapPart::draw()
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
+
+long MapPart::getSize()
+{
+	return this->coordVbo->getDataSize();
+}

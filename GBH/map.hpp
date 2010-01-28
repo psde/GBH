@@ -34,6 +34,8 @@ class Map
 
 		void draw();
 		void update();
+
+		long numVertices;
 };
 
 #endif

@@ -85,7 +85,7 @@ class GameWindow : public Gosu::Window
 			graphics().endGL();
 
 			this->font->draw(L"x/y/z/a: " + boost::lexical_cast<wstring>(this->x) + L", " + boost::lexical_cast<wstring>(this->y) + L", " + boost::lexical_cast<wstring>(this->z) + L" @ " + boost::lexical_cast<wstring>(this->a) + L"", 0, 0, 1);
-
+			this->font->draw(L"no. of vertices: " + boost::lexical_cast<wstring>(this->map->numVertices) , 0, 20, 1);
 			fps->updateFPS();
 			fps->draw();
 		}
