@@ -27,12 +27,6 @@ Map::Map(const char *map, Style* style){
 			c_map.blocks = reinterpret_cast<BlockInfo*>(offset);
 			offset += c_map.num_blocks * sizeof(BlockInfo);
 
-			/*Block* block_zero = new Block(c_map.blocks[0]);
-
-			for(int x=0;x<255;x++) for(int y=0;y<255;y++) for(int z=0;z<7;z++){
-				this->citySphere[x][y][z] = block_zero;
-			}*/
-
 			for(int x=0;x<255;x++) for(int y=0;y<255;y++) {
 				int base = c_map.base[y*256+x];
 
@@ -41,8 +35,6 @@ Map::Map(const char *map, Style* style){
 				int i = 0;
 
 				for(i=0;i<(column->height-column->offset);i++){
-					//this->citySphere[x][y][i+column->offset] = new Block(c_map.blocks[column->blockd[i]]);
-
 					BlockFace face = Block::getBlockFace(c_map.blocks[column->blockd[i]].lid);
 					int tex = face.tile_number + (face.flat ? 1000 : 0);
 
@@ -84,8 +76,6 @@ Map::Map(const char *map, Style* style){
 		free(chk);
 	}
 	delete reader;
-
-
 }
 
 Map::~Map()
