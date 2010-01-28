@@ -20,31 +20,39 @@ Map::Map(const char *map, Style* style){
 		}
 	}
 
+
+
 	// Read animation data
 	char* offset = animation_data->data;
 	while(*reinterpret_cast<short*>(offset) < 992)
 	{
-		TileAnimation anim;
+		TileAnimation* anim = new TileAnimation;
 
-		anim.base = *reinterpret_cast<short*>(offset);
+		anim->base = *reinterpret_cast<short*>(offset);
 		offset += sizeof(short);
 
-		anim.frame_rate = *reinterpret_cast<char*>(offset);
+		anim->frame_rate = *reinterpret_cast<char*>(offset);
 		offset += sizeof(char);
 
-		anim.repeat = *reinterpret_cast<char*>(offset);
+		anim->repeat = *reinterpret_cast<char*>(offset);
 		offset += sizeof(char);
 
-		anim.anim_length = *reinterpret_cast<char*>(offset);
+		anim->anim_length = *reinterpret_cast<char*>(offset);
 		offset += sizeof(char);
 
-		anim.unused = *reinterpret_cast<char*>(offset);
+		anim->unused = *reinterpret_cast<char*>(offset);
 		offset += sizeof(char);
 
-		anim.tiles = reinterpret_cast<short*>(offset);
-		offset += anim.anim_length * sizeof(short);
+		anim->tiles = reinterpret_cast<short*>(offset);
+		offset += anim->anim_length * sizeof(short);
 
-		std::cout << anim.base << " " << (int)anim.frame_rate << " " << (int)anim.repeat << " " << (int)anim.anim_length << std::endl;
+		animatedGeom[anim->base].curTile = 0;
+		animatedGeom[anim->base].tick = 0;
+		animatedGeom[anim->base].anim = anim;
+
+		tileAnimations.push_back(anim);
+
+		std::cout << anim->base << " " << (int)anim->frame_rate << " " << (int)anim->repeat << " " << (int)anim->anim_length << " " << anim->tiles[1] << std::endl;
 	}
 
 	// Read dmap data
@@ -75,7 +83,6 @@ Map::Map(const char *map, Style* style){
 		int i = 0;
 
 		for(i=0;i<(column->height-column->offset);i++){
-			if(base != *c_map.columns + 608) continue;
 			BlockFace face = Block::getBlockFace(c_map.blocks[column->blockd[i]].lid);
 			int tex = face.tile_number + (face.flat ? 1000 : 0);
 
@@ -105,11 +112,22 @@ Map::Map(const char *map, Style* style){
 				{							
 					it->texcoord = Matrix4x4::rotationMatrixZ(Math::degreesToRadians(180 - (face.rotation_code * 90))) * it->texcoord;
 				}
-
-				geom[tex].pushVertex(vertices[0]);
-				geom[tex].pushVertex(vertices[1]);
-				geom[tex].pushVertex(vertices[2]);
-				geom[tex].pushVertex(vertices[3]);
+				
+				if(animatedGeom.find(face.tile_number) != animatedGeom.end())
+				{	
+					int animationBase = face.tile_number;
+					animatedGeom[animationBase].part.pushVertex(vertices[0]);
+					animatedGeom[animationBase].part.pushVertex(vertices[1]);
+					animatedGeom[animationBase].part.pushVertex(vertices[2]);
+					animatedGeom[animationBase].part.pushVertex(vertices[3]);
+				}
+				else
+				{
+					geom[tex].pushVertex(vertices[0]);
+					geom[tex].pushVertex(vertices[1]);
+					geom[tex].pushVertex(vertices[2]);
+					geom[tex].pushVertex(vertices[3]);
+				}
 			}
 		}
 	}
@@ -122,18 +140,35 @@ Map::~Map()
 
 void Map::draw()
 {
-	this->numVertices = 0;
 	for(Part::iterator it = geom.begin(); it != geom.end(); it++)
 	{
 		int tex = (it->first > 1000 ? it->first - 1000 : it->first);
 		glBindTexture(GL_TEXTURE_2D, this->style->getTexture(tex, (it->first > 1000)));
 		it->second.draw();
-		this->numVertices += 4 * it->second.getSize();
+	}
+
+	for(AnimatedPart::iterator it = animatedGeom.begin(); it != animatedGeom.end(); it++)
+	{
+		//int tex = (it->first > 1000 ? it->first - 1000 : it->first);
+		//it->second.anim.tiles[0]
+		//std::cout << it->second.anim->tiles << std::endl;
+		//TileAnimation anim = it->second.anim;
+		//std::cout << anim.base << " " << (int)anim.frame_rate << " " << (int)anim.repeat << " " << (int)anim.anim_length << " " << anim.tiles[0] << std::endl;
+		glBindTexture(GL_TEXTURE_2D, this->style->getTexture(it->first + it->second.curTile, false));
+		it->second.part.draw();
 	}
 }
 
 void Map::update()
 {
-	
+	for(AnimatedPart::iterator it = animatedGeom.begin(); it != animatedGeom.end(); it++)
+	{
+		it->second.tick++;
+		if(it->second.tick >= it->second.anim->frame_rate*10)
+		{
+			it->second.tick = 0;
+			it->second.curTile = (++it->second.curTile)%2;
+		}
+	}
 }
 

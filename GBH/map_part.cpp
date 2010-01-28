@@ -17,6 +17,8 @@ void MapPart::pushVertex(Vertex &vert)
 
 void MapPart::draw()
 {
+	if(this->coord.size() == 0) return;
+
 	if(this->lastModified > this->lastUpdate)
 	{
 		this->coordVbo->update(this->coord);
@@ -36,9 +38,4 @@ void MapPart::draw()
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
-}
-
-long MapPart::getSize()
-{
-	return this->coordVbo->getDataSize();
 }

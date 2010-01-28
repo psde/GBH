@@ -18,17 +18,30 @@ struct Texture
 	bool flat;
 };
 
+struct AnimationMapPart
+{
+	MapPart part;
+	TileAnimation *anim;
+	int curTile;
+	int tick;
+};
+
 class Map
 {
+	// Texture, MapPart
 	typedef std::map<int, MapPart> Part;
-	typedef std::map<int, MapPart> AnimatedPart;
+
+	// Basetile of Animation, AnimationMapPart
+	typedef std::map<int, AnimationMapPart> AnimatedPart;
 
 	private:
 		Block* citySphere[256][256][8];
 		Style* style;
 
 		Part geom;
+		AnimatedPart animatedGeom;
 
+		std::vector<TileAnimation*> tileAnimations; //meh?
 	public:
 		Map(const char * map, Style*);
 		~Map();
