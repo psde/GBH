@@ -52,10 +52,14 @@ Map::Map(const char *map, Style* style){
 						vertices[2].coord = Vector3(x + 1.0f, -y + 1.0f, z + 0.0f);
 						vertices[3].coord = Vector3(x + 0.0f, -y + 1.0f, z + 0.0f);
 
-						vertices[0].texcoord = Vector2(0, 0);
-						vertices[1].texcoord = Vector2(1, 0);
-						vertices[2].texcoord = Vector2(1, 1);
-						vertices[3].texcoord = Vector2(0, 1);
+						// We need our texture set to GL_WRAP_AROUND for this to work
+						// Obviously, pixels from the other side are leaking around when filtering
+						// So this offset tries to eleminate that - maybe fix the matrix to avoid this
+						// (Still happens on the mipmapped, distance tile textures)
+						vertices[0].texcoord = Vector2(0.01, 0.01);
+						vertices[1].texcoord = Vector2(0.99, 0.01);
+						vertices[2].texcoord = Vector2(0.99, 0.99);
+						vertices[3].texcoord = Vector2(0.01, 0.99);
 
 						// THIS is weird.
 						if(face.flip == 0)
