@@ -37,6 +37,15 @@ struct ColInfo {
 	int blockd[8];
 };
 
+struct TileAnimation {
+	short base;
+	char frame_rate;
+	char repeat;
+	char anim_length;
+	char unused;
+	short* tiles; 
+};
+
 struct PhysPalette {
 	int* palette;
 };

@@ -132,6 +132,13 @@ class GameWindow : public Gosu::Window
                 this->map = new Map("data/maps/bil.gmp", this->style);
             }
 
+            if(button == Gosu::kbSpace) {
+				this->x = -126;
+				this->y = 126;
+				this->z = -323;
+				this->a = 0;
+            }
+
 		}
 };
 

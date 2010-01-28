@@ -21,6 +21,7 @@ struct Texture
 class Map
 {
 	typedef std::map<int, MapPart> Part;
+	typedef std::map<int, MapPart> AnimatedPart;
 
 	private:
 		Block* citySphere[256][256][8];
