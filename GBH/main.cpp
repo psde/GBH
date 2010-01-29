@@ -21,9 +21,9 @@ class GameWindow : public Gosu::Window
 			this->font = new Gosu::Font(graphics(), Gosu::defaultFontName(), 20);
 			this->fps = new Gosu::fpsCounter(&graphics(), Gosu::realWidth(graphics())-203, 3, 200, 100, 0.03f);
 
-			this->style = new Style("data/styles/bil.sty");
+			this->style = new Style("data/styles/wil.sty");
 
-			this->map = new Map("data/maps/bil.gmp", this->style);
+			this->map = new Map("data/maps/wil.gmp", this->style);
 
 			this->x = -12;
 			this->y = 30;

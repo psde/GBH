@@ -20,10 +20,15 @@ struct Texture
 
 struct AnimationMapPart
 {
+	AnimationMapPart()
+		: curTile(0), tick(0)
+	{ }
+
 	MapPart part;
 	TileAnimation anim;
 	int curTile;
 	int tick;
+	std::vector<int> animationTiles;
 };
 
 class Map
@@ -41,7 +46,11 @@ class Map
 		Part geom;
 		AnimatedPart animatedGeom;
 
-		std::vector<TileAnimation> tileAnimations; //meh?
+		std::vector<TileAnimation> tileAnimations;
+
+		void addBlock(BlockInfo &block, Vector3 &offset);
+		void addFace(BlockFace &face, Quad<Vector3> &quad);
+
 	public:
 		Map(const char * map, Style*);
 		~Map();

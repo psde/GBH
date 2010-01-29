@@ -15,6 +15,22 @@ class Matrix4x4
 					f[y][x] = 0.0;
 		}
 
+		Matrix4x4(Vector2 &a, Vector2 &b, Vector2 &c,  Vector2 &d)
+		{
+			f[0][0] = a.x; f[0][1] = a.y; f[0][2] = 0; f[0][3] = 0;
+			f[1][0] = b.x; f[1][1] = b.y; f[1][2] = 0; f[1][3] = 0;
+			f[2][0] = c.x; f[2][1] = c.y; f[2][2] = 1; f[2][3] = 0;
+			f[3][0] = d.x; f[3][1] = d.y; f[3][2] = 0; f[3][3] = 1;
+		}
+
+		Matrix4x4(Vector3 &a, Vector3 &b, Vector3 &c,  Vector3 &d)
+		{
+			f[0][0] = a.x; f[0][1] = a.y; f[0][2] = a.z; f[0][3] = 0;
+			f[1][0] = b.x; f[1][1] = b.y; f[1][2] = b.z; f[1][3] = 0;
+			f[2][0] = c.x; f[2][1] = c.y; f[2][2] = c.z; f[2][3] = 0;
+			f[3][0] = d.x; f[3][1] = d.y; f[3][2] = d.z; f[3][3] = 1;
+		}
+
 		Matrix4x4(Vector4 &a, Vector4 &b, Vector4 &c,  Vector4 &d)
 		{
 			f[0][0] = a.x; f[0][1] = a.y; f[0][2] = a.z; f[0][3] = a.w;
