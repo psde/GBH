@@ -104,6 +104,9 @@ Map::Map(const char *map, Style* style){
 	}
 
 	delete reader;
+
+
+
 }
 
 Map::~Map()
@@ -228,22 +231,22 @@ void Map::addBlock(BlockInfo &block, Vector3 &offset)
 	bottom.br = lid.tl;
 
 	Quad<Vector3> right;
-	right.tl = Vector3(high, high, 0.0f);
-	right.tr = Vector3(high, low, 0.0f);
-	right.bl = lid.tr;
-	right.br = lid.bl;
+	right.tl = Vector3(high, low, 0.0f);
+	right.tr = Vector3(high, high, 0.0f);
+	right.bl = lid.bl;
+	right.br = lid.tr;
 
 	Quad<Vector3> left;
-	left.tl = Vector3(low, low, 0.0f);
-	left.tr = Vector3(low, high, 0.0f);
-	left.bl = lid.br;
-	left.br = lid.tl;
+	left.tl = Vector3(low, high, 0.0f);
+	left.tr = Vector3(low, low, 0.0f);
+	left.bl = lid.tl;
+	left.br = lid.br;
 
 	if(faces[2].flat && !faces[0].flat)
 	{
 		top = bottom;
 		faces[0].flat = true;
-		//faces[2].flip = faces[0].flip;
+		//faces[0].flip = faces[2].flip;
 	}
 
 	// FIXME: flip-floping only works here at the moment - figure out why
@@ -251,21 +254,21 @@ void Map::addBlock(BlockInfo &block, Vector3 &offset)
 	{
 		bottom = top;
 		faces[2].flat = true;
-		//faces[0].flip = faces[2].flip;
+		//faces[2].flip = faces[0].flip;
 	}
 
 	if(faces[1].flat && !faces[3].flat)
 	{
 		left = right;
 		faces[3].flat = true;
-		//faces[1].flip = faces[3].flip;
+		//faces[3].flip = faces[1].flip;
 	}
 
 	if(faces[3].flat && !faces[1].flat)
 	{
 		right = left;
 		faces[1].flat = true;
-		//faces[3].flip = faces[1].flip;
+		//faces[1].flip = faces[3].flip;
 	}
 
 	this->addFace(faces[0], top, offset);
