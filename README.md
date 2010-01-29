@@ -2,6 +2,8 @@
 Nothing much yet, just a playground for me to do graphic experiments.
 At the moment this is capable of drawing the whole city with a stable 60 fps. :)
 
+This project is aprox. 3 years old (somewhere from late 2007), so most of the code is rather ugly.
+
 #Features that are working:
 * Most of the slopes
 * Animation with stable frame rate (aprox. equal to gta2, needs finetuning)
