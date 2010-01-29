@@ -48,8 +48,11 @@ class Map
 
 		std::vector<TileAnimation> tileAnimations;
 
+		Quad<Vector3> buildSlopeLid(int slope, int steps);
 		void addBlock(BlockInfo &block, Vector3 &offset);
-		void addFace(BlockFace &face, Quad<Vector3> &quad);
+		void addFace(BlockFace &face, Quad<Vector3> &quad, Vector3 &offset);
+
+		void drawGeometry();
 
 	public:
 		Map(const char * map, Style*);

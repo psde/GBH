@@ -102,6 +102,7 @@ Map::Map(const char *map, Style* style){
 			this->addBlock(c_map.blocks[column->blockd[i]], Vector3(x, -y, i+column->offset));
 		}
 	}
+
 	delete reader;
 }
 
@@ -109,7 +110,7 @@ Map::~Map()
 {
 }
 
-void Map::draw()
+void Map::drawGeometry()
 {
 	for(Part::iterator it = geom.begin(); it != geom.end(); it++)
 	{
@@ -129,6 +130,11 @@ void Map::draw()
 	}
 }
 
+void Map::draw()
+{
+    this->drawGeometry();
+}
+
 void Map::update()
 {
 	for(AnimatedPart::iterator it = animatedGeom.begin(); it != animatedGeom.end(); it++)
@@ -137,17 +143,49 @@ void Map::update()
 		if(it->second.tick >= it->second.anim.frame_rate*2)
 		{
 			it->second.tick = 0;
-			it->second.curTile++;
-			if(it->second.curTile >= it->second.anim.anim_length)
-			{
-				it->second.curTile = 0;
-			}
+			it->second.curTile = (++it->second.curTile)%it->second.anim.anim_length;
 		}
 	}
 }
 
+Quad<Vector3> Map::buildSlopeLid(int slope, int steps)
+{
+	float height = 1.0 / steps;
+	int level = slope % steps;
+	float low = 1 + height * level - height * steps;
+
+	Quad<Vector3> lid;
+	lid.tl = Vector3(0, 0, low);
+	lid.tr = Vector3(1, 0, low);
+	lid.bl = Vector3(1, 1, low);
+	lid.br = Vector3(0, 1, low);
+
+	switch(slope / steps)
+	{
+		case 0: // up
+			lid.bl += Vector3(0, 0, height);
+			lid.br += Vector3(0, 0, height);
+			break;
+		case 1: // down
+			lid.tl += Vector3(0, 0, height);
+			lid.tr += Vector3(0, 0, height);
+			break;
+		case 2: // right
+			lid.tl += Vector3(0, 0, height);
+			lid.br += Vector3(0, 0, height);
+			break;
+		case 3: // left
+			lid.tr += Vector3(0, 0, height);
+			lid.bl += Vector3(0, 0, height);
+			break;
+	}
+
+	return lid;
+}
+
 void Map::addBlock(BlockInfo &block, Vector3 &offset)
 {
+	int slope = (block.slope_type & 252) >> 2;
 	BlockFace faces[5];
 	faces[0] = Block::getBlockFace(block.top);
 	faces[1] = Block::getBlockFace(block.right);
@@ -155,81 +193,97 @@ void Map::addBlock(BlockInfo &block, Vector3 &offset)
 	faces[3] = Block::getBlockFace(block.left);
 	faces[4] = Block::getBlockFace(block.lid);
 
+	float low = 0.0f;
+	float high = 1.0f;
+
+	if(slope == 61 )
+	{
+		low = 0.35f;
+		high = 0.65f;
+	}
+
 	Quad<Vector3> lid;
-	lid.tl = Vector3(offset.x + 0.0f, offset.y + 0.0f, offset.z + 1.0f);
-	lid.tr = Vector3(offset.x + 1.0f, offset.y + 0.0f, offset.z + 1.0f);
-	lid.bl = Vector3(offset.x + 1.0f, offset.y + 1.0f, offset.z + 1.0f);
-	lid.br = Vector3(offset.x + 0.0f, offset.y + 1.0f, offset.z + 1.0f);
+	lid.tl = Vector3(low,  low, 1);
+	lid.tr = Vector3(high, low, 1);
+	lid.bl = Vector3(high, high, 1);
+	lid.br = Vector3(low,  high, 1);
+
+	if(slope >= 1 && slope <= 8)
+		lid = this->buildSlopeLid(slope - 1, 2);
+	if(slope >= 9 && slope <= 40)
+		lid = this->buildSlopeLid(slope - 9, 8);
+	if(slope >= 41 && slope <= 44)
+		lid = this->buildSlopeLid(slope - 41, 1);
 
 	Quad<Vector3> top;
-	top.tl = Vector3(offset.x + 0.0f, offset.y + 1.0f, offset.z + 0.0f);
-	top.tr = Vector3(offset.x + 1.0f, offset.y + 1.0f, offset.z + 0.0f);
+	top.tl = Vector3(low, high, 0.0f);
+	top.tr = Vector3(high, high, 0.0f);
 	top.bl = lid.bl;
 	top.br = lid.br;
 
 	Quad<Vector3> bottom;
-	bottom.tl = Vector3(offset.x + 0.0f, offset.y + 0.0f, offset.z + 0.0f);
-	bottom.tr = Vector3(offset.x + 1.0f, offset.y + 0.0f, offset.z + 0.0f);
+	bottom.tl = Vector3(low, low, 0.0f);
+	bottom.tr = Vector3(high, low, 0.0f);
 	bottom.bl = lid.tr;
 	bottom.br = lid.tl;
 
 	Quad<Vector3> right;
-	right.tl = Vector3(offset.x + 1.0f, offset.y + 1.0f, offset.z + 0.0f);
-	right.tr = Vector3(offset.x + 1.0f, offset.y + 0.0f, offset.z + 0.0f);
+	right.tl = Vector3(high, high, 0.0f);
+	right.tr = Vector3(high, low, 0.0f);
 	right.bl = lid.tr;
 	right.br = lid.bl;
 
 	Quad<Vector3> left;
-	left.tl = Vector3(offset.x + 0.0f, offset.y + 0.0f, offset.z + 0.0f);
-	left.tr = Vector3(offset.x + 0.0f, offset.y + 1.0f, offset.z + 0.0f);
+	left.tl = Vector3(low, low, 0.0f);
+	left.tr = Vector3(low, high, 0.0f);
 	left.bl = lid.br;
 	left.br = lid.tl;
-
 
 	if(faces[2].flat && !faces[0].flat)
 	{
 		top = bottom;
 		faces[0].flat = true;
-		faces[2].flip = faces[0].flip;
+		//faces[2].flip = faces[0].flip;
 	}
 
+	// FIXME: flip-floping only works here at the moment - figure out why
 	if(faces[0].flat && !faces[2].flat)
 	{
 		bottom = top;
 		faces[2].flat = true;
-		faces[0].flip = faces[2].flip;
+		//faces[0].flip = faces[2].flip;
 	}
 
 	if(faces[1].flat && !faces[3].flat)
 	{
 		left = right;
 		faces[3].flat = true;
-		faces[1].flip = faces[3].flip;
+		//faces[1].flip = faces[3].flip;
 	}
 
 	if(faces[3].flat && !faces[1].flat)
 	{
 		right = left;
 		faces[1].flat = true;
-		faces[3].flip = faces[1].flip;
+		//faces[3].flip = faces[1].flip;
 	}
 
-	this->addFace(faces[0], top);
-	this->addFace(faces[1], right);
-	this->addFace(faces[2], bottom);
-	this->addFace(faces[3], left);
-	this->addFace(faces[4], lid);
+	this->addFace(faces[0], top, offset);
+	this->addFace(faces[1], right, offset);
+	this->addFace(faces[2], bottom, offset);
+	this->addFace(faces[3], left, offset);
+	this->addFace(faces[4], lid, offset);
 }
 
-void Map::addFace(BlockFace &face, Quad<Vector3> &quad)
+void Map::addFace(BlockFace &face, Quad<Vector3> &quad, Vector3 &offset)
 {
 	if(face.tile_number <= 0) return;
 
 	std::vector<Vertex> vertices(4);
-	vertices[0].coord = quad.tl;
-	vertices[1].coord = quad.tr;
-	vertices[2].coord = quad.bl;
-	vertices[3].coord = quad.br;
+	vertices[0].coord = offset + quad.tl;
+	vertices[1].coord = offset + quad.tr;
+	vertices[2].coord = offset + quad.bl;
+	vertices[3].coord = offset + quad.br;
 
 	// We need our texture set to GL_WRAP_AROUND for this to work
 	// Obviously, pixels from the other side are leaking around when filtering
