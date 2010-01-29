@@ -23,36 +23,39 @@ Map::Map(const char *map, Style* style){
 
 
 	// Read animation data
+	char* starting = animation_data->data;
 	char* offset = animation_data->data;
-	while(*reinterpret_cast<short*>(offset) < 992)
+	while((int)offset - (int)starting < animation_data->header->size )
 	{
-		TileAnimation* anim = new TileAnimation;
+		/*std::cout << (int)offset << " " << (int)starting << " " << (int)offset - (int)starting << " " << animation_data->header->size << std::endl;
+		system("pause");*/
+		TileAnimation anim;
 
-		anim->base = *reinterpret_cast<short*>(offset);
+		anim.base = *reinterpret_cast<short*>(offset);
 		offset += sizeof(short);
 
-		anim->frame_rate = *reinterpret_cast<char*>(offset);
+		anim.frame_rate = *reinterpret_cast<char*>(offset);
 		offset += sizeof(char);
 
-		anim->repeat = *reinterpret_cast<char*>(offset);
+		anim.repeat = *reinterpret_cast<unsigned char*>(offset);
+		offset += sizeof(unsigned char);
+
+		anim.anim_length = *reinterpret_cast<char*>(offset);
 		offset += sizeof(char);
 
-		anim->anim_length = *reinterpret_cast<char*>(offset);
+		//anim.unused = *reinterpret_cast<char*>(offset);
 		offset += sizeof(char);
 
-		anim->unused = *reinterpret_cast<char*>(offset);
-		offset += sizeof(char);
+		anim.tiles = reinterpret_cast<short*>(offset);
+		offset += anim.anim_length * sizeof(short);
 
-		anim->tiles = reinterpret_cast<short*>(offset);
-		offset += anim->anim_length * sizeof(short);
-
-		animatedGeom[anim->base].curTile = 0;
-		animatedGeom[anim->base].tick = 0;
-		animatedGeom[anim->base].anim = anim;
+		animatedGeom[anim.base].curTile = 0;
+		animatedGeom[anim.base].tick = 0;
+		animatedGeom[anim.base].anim = anim;
 
 		tileAnimations.push_back(anim);
 
-		std::cout << anim->base << " " << (int)anim->frame_rate << " " << (int)anim->repeat << " " << (int)anim->anim_length << " " << anim->tiles[1] << std::endl;
+		std::cout << anim.base << " " << (int)anim.frame_rate << " " << (int)anim.repeat << " " << (int)anim.anim_length << " " << anim.tiles[1] << std::endl;
 	}
 
 	// Read dmap data
@@ -149,11 +152,6 @@ void Map::draw()
 
 	for(AnimatedPart::iterator it = animatedGeom.begin(); it != animatedGeom.end(); it++)
 	{
-		//int tex = (it->first > 1000 ? it->first - 1000 : it->first);
-		//it->second.anim.tiles[0]
-		//std::cout << it->second.anim->tiles << std::endl;
-		//TileAnimation anim = it->second.anim;
-		//std::cout << anim.base << " " << (int)anim.frame_rate << " " << (int)anim.repeat << " " << (int)anim.anim_length << " " << anim.tiles[0] << std::endl;
 		glBindTexture(GL_TEXTURE_2D, this->style->getTexture(it->first + it->second.curTile, false));
 		it->second.part.draw();
 	}
@@ -164,10 +162,10 @@ void Map::update()
 	for(AnimatedPart::iterator it = animatedGeom.begin(); it != animatedGeom.end(); it++)
 	{
 		it->second.tick++;
-		if(it->second.tick >= it->second.anim->frame_rate*10)
+		if(it->second.tick >= it->second.anim.frame_rate*2)
 		{
 			it->second.tick = 0;
-			it->second.curTile = (++it->second.curTile)%2;
+			it->second.curTile = (++it->second.curTile)%it->second.anim.anim_length;
 		}
 	}
 }

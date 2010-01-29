@@ -41,7 +41,7 @@ struct TileAnimation {
 	short base;
 	char frame_rate;
 	char repeat;
-	char anim_length;
+	unsigned char anim_length;
 	char unused;
 	short* tiles; 
 };
