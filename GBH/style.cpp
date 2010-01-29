@@ -33,6 +33,10 @@ Style::Style(const char* style)
 		}
 	}
 
+	GLfloat maxAnisotropy;
+	glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy);
+
+
 	this->textureCount = 0;
 	const int page_size = 256 * 256;
 	for(int page_num = 0; page_num < 62; page_num++)
@@ -58,25 +62,23 @@ Style::Style(const char* style)
 			
 				glGenTextures(1, &this->tiles[tile_index].gl_i);
 				glBindTexture(GL_TEXTURE_2D, this->tiles[tile_index].gl_i);
-				//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
 				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, 1);
+				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy);
 				//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 				//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 64, 64, 0, GL_BGRA, GL_UNSIGNED_BYTE, tile);
-				//gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, 64, 64, GL_BGRA, GL_UNSIGNED_BYTE, tile);
 
 				glGenTextures(1, &this->tiles_flat[tile_index].gl_i);
 				glBindTexture(GL_TEXTURE_2D, this->tiles_flat[tile_index].gl_i);
-				//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
 				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, 1);
+				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy);
 				//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 				//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 64, 64, 0, GL_BGRA, GL_UNSIGNED_BYTE, tile);
-				//gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, 64, 64, GL_BGRA, GL_UNSIGNED_BYTE, tile);
 
 				this->textureCount++;
 			}
