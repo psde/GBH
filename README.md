@@ -11,10 +11,10 @@ So half of the work I am doing on this is refactoring and cleaning... Yeah.
 
 #Features that are NOT working right now:
 * Lights
-* Partitial and 3/4 sided slopes
+* Partial 3/4 sided slopes
 
 #Features I want to implement:
-* Dynamic day/night with shadows and proper lighting at night
+* Dynamic day/night with shadows and proper lighting 
 
 Here, have some screenshots:
 ![Screenshot.](http://bayimg.com/image/kakdbaaca.jpg)

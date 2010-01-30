@@ -189,6 +189,7 @@ Quad<Vector3> Map::buildSlopeLid(int slope, int steps)
 void Map::addBlock(BlockInfo &block, Vector3 &offset)
 {
 	int slope = (block.slope_type & 252) >> 2;
+
 	BlockFace faces[5];
 	faces[0] = Block::getBlockFace(block.top);
 	faces[1] = Block::getBlockFace(block.right);
@@ -196,20 +197,56 @@ void Map::addBlock(BlockInfo &block, Vector3 &offset)
 	faces[3] = Block::getBlockFace(block.left);
 	faces[4] = Block::getBlockFace(block.lid);
 
-	float low = 0.0f;
-	float high = 1.0f;
+	Vector2 low(0.0f, 0.0f);
+	Vector2 high(1.0f, 1.0f);
 
 	if(slope == 61 )
 	{
-		low = 0.35f;
-		high = 0.65f;
+		low = Vector2(0.35f, 0.35f);
+		high = Vector2(0.65f, 0.65f);
+	}
+
+	if(slope == 53) // partial left
+		high.x = 0.3f;
+
+	if(slope == 54) // partial right
+		low.x = 0.7f;
+
+	if(slope == 55) // partial top
+		low.y = 0.7f;
+
+	if(slope == 56) // partial bottom
+		high.y = 0.3f;
+
+	if(slope == 57) // partial top left
+	{
+		high.x = 0.3f;
+		low.y = 0.7f;
+	}
+
+	if(slope == 58) // partial top right
+	{
+		low.x = 0.7f;
+		low.y = 0.7f;
+	}
+
+	if(slope == 59) // partial bottom right
+	{
+		high.y = 0.3f;
+		low.x = 0.7f;
+	}
+	if(slope == 60) // partial bottom left
+	{
+		high.y = 0.3f;
+		high.x = 0.3f;
 	}
 
 	Quad<Vector3> lid;
-	lid.tl = Vector3(low,  low, 1);
-	lid.tr = Vector3(high, low, 1);
-	lid.bl = Vector3(high, high, 1);
-	lid.br = Vector3(low,  high, 1);
+	lid.tl = Vector3(low.x,  low.y, 1);
+	lid.tr = Vector3(high.x, low.y, 1);
+	lid.bl = Vector3(high.x, high.y, 1); // what the hell, this is bottom right?!
+	lid.br = Vector3(low.x,  high.y, 1);
+
 
 	if(slope >= 1 && slope <= 8)
 		lid = this->buildSlopeLid(slope - 1, 2);
@@ -219,26 +256,26 @@ void Map::addBlock(BlockInfo &block, Vector3 &offset)
 		lid = this->buildSlopeLid(slope - 41, 1);
 
 	Quad<Vector3> top;
-	top.tl = Vector3(low, high, 0.0f);
-	top.tr = Vector3(high, high, 0.0f);
+	top.tl = Vector3(low.x, high.y, 0.0f);
+	top.tr = Vector3(high.x, high.y, 0.0f);
 	top.bl = lid.bl;
-	top.br = lid.br;
+	top.br = lid.br;	
 
 	Quad<Vector3> bottom;
-	bottom.tl = Vector3(low, low, 0.0f);
-	bottom.tr = Vector3(high, low, 0.0f);
+	bottom.tl = Vector3(low.x, low.y, 0.0f);
+	bottom.tr = Vector3(high.x, low.y, 0.0f);
 	bottom.bl = lid.tr;
 	bottom.br = lid.tl;
 
 	Quad<Vector3> right;
-	right.tl = Vector3(high, low, 0.0f);
-	right.tr = Vector3(high, high, 0.0f);
+	right.tl = Vector3(high.x, low.y, 0.0f);
+	right.tr = Vector3(high.x, high.y, 0.0f);
 	right.bl = lid.bl;
 	right.br = lid.tr;
 
 	Quad<Vector3> left;
-	left.tl = Vector3(low, high, 0.0f);
-	left.tr = Vector3(low, low, 0.0f);
+	left.tl = Vector3(low.x, high.y, 0.0f);
+	left.tr = Vector3(low.x, low.y, 0.0f);
 	left.bl = lid.tl;
 	left.br = lid.br;
 
