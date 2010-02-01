@@ -5,7 +5,7 @@ Map::Map(const char *map, Style* style){
 
 	Filereader* reader = new Filereader(map);
 
-	this->numVertices = 0;
+	//this->numVertices = 0;
 
 	Chunk *animation_data;
 	Chunk *dmap_data;
@@ -151,6 +151,21 @@ void Map::update()
 	}
 }
 
+long Map::getVerticeSize()
+{
+	long size=0;
+	for(Part::iterator it = geom.begin(); it != geom.end(); it++)
+	{
+		size += it->second.getVerticeSize();
+	}
+
+	for(AnimatedPart::iterator it = animatedGeom.begin(); it != animatedGeom.end(); it++)
+	{
+		size += it->second.part.getVerticeSize();
+	}
+	return size;
+};
+
 Quad<Vector3> Map::buildSlopeLid(int slope, int steps)
 {
 	float height = 1.0 / steps;
@@ -256,10 +271,10 @@ void Map::addBlock(BlockInfo &block, Vector3 &offset)
 		lid = this->buildSlopeLid(slope - 41, 1);
 
 	Quad<Vector3> top;
-	top.tl = Vector3(low.x, high.y, 0.0f);
-	top.tr = Vector3(high.x, high.y, 0.0f);
-	top.bl = lid.bl;
-	top.br = lid.br;	
+	top.tl = Vector3(high.x, high.y, 0.0f);
+	top.tr = Vector3(low.x, high.y, 0.0f);
+	top.bl = lid.br;	
+	top.br = lid.bl;
 
 	Quad<Vector3> bottom;
 	bottom.tl = Vector3(low.x, low.y, 0.0f);
@@ -279,43 +294,48 @@ void Map::addBlock(BlockInfo &block, Vector3 &offset)
 	left.bl = lid.tl;
 	left.br = lid.br;
 
+	// flat-fliping still kinda buggy, but most faces
+	// seem to be correct with this code
 	if(faces[2].flat && !faces[0].flat)
 	{
 		top = bottom;
 		faces[0].flat = true;
-		//faces[0].flip = faces[2].flip;
+		faces[0].flip = !faces[0].flip;
+		faces[2].flip = !faces[2].flip;
 	}
 
-	// FIXME: flip-floping only works here at the moment - figure out why
 	if(faces[0].flat && !faces[2].flat)
 	{
 		bottom = top;
 		faces[2].flat = true;
-		//faces[2].flip = faces[0].flip;
+		faces[2].flip = !faces[2].flip;
+		faces[0].flip = !faces[0].flip;
 	}
 
 	if(faces[1].flat && !faces[3].flat)
 	{
 		left = right;
 		faces[3].flat = true;
-		//faces[3].flip = faces[1].flip;
+		faces[3].flip = !faces[3].flip;
+		faces[1].flip = !faces[1].flip;
 	}
 
 	if(faces[3].flat && !faces[1].flat)
 	{
 		right = left;
 		faces[1].flat = true;
-		//faces[1].flip = faces[3].flip;
+		faces[1].flip = !faces[1].flip;
+		faces[3].flip = !faces[3].flip;
 	}
 
-	this->addFace(faces[0], top, offset);
-	this->addFace(faces[1], right, offset);
-	this->addFace(faces[2], bottom, offset);
-	this->addFace(faces[3], left, offset);
-	this->addFace(faces[4], lid, offset);
+	this->addFace(faces[0], top, offset, low, high);
+	this->addFace(faces[1], right, offset, low, high);
+	if(!(faces[0].flat && !faces[2].flat)) this->addFace(faces[2], bottom, offset, low, high);
+	this->addFace(faces[3], left, offset, low, high);
+	this->addFace(faces[4], lid, offset, low, high);
 }
 
-void Map::addFace(BlockFace &face, Quad<Vector3> &quad, Vector3 &offset)
+void Map::addFace(BlockFace &face, Quad<Vector3> &quad, Vector3 &offset, Vector2 &low, Vector2 &high)
 {
 	if(face.tile_number <= 0) return;
 
@@ -329,10 +349,16 @@ void Map::addFace(BlockFace &face, Quad<Vector3> &quad, Vector3 &offset)
 	// Obviously, pixels from the other side are leaking around when filtering
 	// So this offset tries to eleminate that - maybe fix the matrix to avoid this
 	// (Still happens on the mipmapped, distance tile textures)
-	vertices[0].texcoord = Vector2(0.01, 0.01);
+	vertices[0].texcoord = Vector2(0.01,  0.01);
 	vertices[1].texcoord = Vector2(0.99, 0.01);
 	vertices[2].texcoord = Vector2(0.99, 0.99);
-	vertices[3].texcoord = Vector2(0.01, 0.99);
+	vertices[3].texcoord = Vector2(0.01,  0.99);
+
+	// fix this:
+	/*vertices[0].texcoord = Vector2(0.01 * low.x,  0.01 * low.y);
+	vertices[1].texcoord = Vector2(0.99 * high.x, 0.01 * low.y);
+	vertices[2].texcoord = Vector2(0.99 * high.x, 0.99 * high.y);
+	vertices[3].texcoord = Vector2(0.01 * low.x,  0.99 * high.y);*/
 
 	// THIS is weird.
 	if(face.flip == 0)

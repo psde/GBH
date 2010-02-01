@@ -50,7 +50,7 @@ class Map
 
 		Quad<Vector3> buildSlopeLid(int slope, int steps);
 		void addBlock(BlockInfo &block, Vector3 &offset);
-		void addFace(BlockFace &face, Quad<Vector3> &quad, Vector3 &offset);
+		void addFace(BlockFace &face, Quad<Vector3> &quad, Vector3 &offset, Vector2 &low, Vector2 &high);
 
 		void drawGeometry();
 
@@ -61,7 +61,7 @@ class Map
 		void draw();
 		void update();
 
-		long numVertices;
+		long getVerticeSize();
 };
 
 #endif

@@ -24,6 +24,8 @@ class MapPart
 
 		void pushVertex(Vertex &vert);
 		void draw();
+
+		long getVerticeSize();
 };
 
 #endif
