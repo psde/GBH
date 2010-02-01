@@ -5,8 +5,6 @@ Map::Map(const char *map, Style* style){
 
 	Filereader* reader = new Filereader(map);
 
-	//this->numVertices = 0;
-
 	Chunk *animation_data;
 	Chunk *dmap_data;
 
@@ -19,8 +17,6 @@ Map::Map(const char *map, Style* style){
 			dmap_data = chk;
 		}
 	}
-
-
 
 	// Read animation data
 	char* starting = animation_data->data;
@@ -294,43 +290,42 @@ void Map::addBlock(BlockInfo &block, Vector3 &offset)
 	left.bl = lid.tl;
 	left.br = lid.br;
 
-	// flat-fliping still kinda buggy, but most faces
-	// seem to be correct with this code
+	// flat-fliping seems correct now
 	if(faces[2].flat && !faces[0].flat)
 	{
 		top = bottom;
+		faces[2].tile_number = 0;
 		faces[0].flat = true;
 		faces[0].flip = !faces[0].flip;
-		faces[2].flip = !faces[2].flip;
 	}
 
 	if(faces[0].flat && !faces[2].flat)
 	{
 		bottom = top;
+		faces[0].tile_number = 0;
 		faces[2].flat = true;
 		faces[2].flip = !faces[2].flip;
-		faces[0].flip = !faces[0].flip;
 	}
 
 	if(faces[1].flat && !faces[3].flat)
 	{
 		left = right;
+		faces[1].tile_number = 0;
 		faces[3].flat = true;
 		faces[3].flip = !faces[3].flip;
-		faces[1].flip = !faces[1].flip;
 	}
 
 	if(faces[3].flat && !faces[1].flat)
 	{
 		right = left;
+		faces[3].tile_number = 0;
 		faces[1].flat = true;
 		faces[1].flip = !faces[1].flip;
-		faces[3].flip = !faces[3].flip;
 	}
 
 	this->addFace(faces[0], top, offset, low, high);
 	this->addFace(faces[1], right, offset, low, high);
-	if(!(faces[0].flat && !faces[2].flat)) this->addFace(faces[2], bottom, offset, low, high);
+	this->addFace(faces[2], bottom, offset, low, high);
 	this->addFace(faces[3], left, offset, low, high);
 	this->addFace(faces[4], lid, offset, low, high);
 }
@@ -349,10 +344,10 @@ void Map::addFace(BlockFace &face, Quad<Vector3> &quad, Vector3 &offset, Vector2
 	// Obviously, pixels from the other side are leaking around when filtering
 	// So this offset tries to eleminate that - maybe fix the matrix to avoid this
 	// (Still happens on the mipmapped, distance tile textures)
-	vertices[0].texcoord = Vector2(0.01,  0.01);
+	vertices[0].texcoord = Vector2(0.01, 0.01);
 	vertices[1].texcoord = Vector2(0.99, 0.01);
 	vertices[2].texcoord = Vector2(0.99, 0.99);
-	vertices[3].texcoord = Vector2(0.01,  0.99);
+	vertices[3].texcoord = Vector2(0.01, 0.99);
 
 	// fix this:
 	/*vertices[0].texcoord = Vector2(0.01 * low.x,  0.01 * low.y);
