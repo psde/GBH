@@ -58,10 +58,11 @@ class Map
 		Map(const char * map, Style*);
 		~Map();
 
-		void draw();
+		void draw(Gosu::Graphics &graphics);
 		void update();
 
 		long getVerticeSize();
+
 };
 
 #endif

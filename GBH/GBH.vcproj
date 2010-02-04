@@ -267,6 +267,22 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Shader"
+			>
+			<File
+				RelativePath="..\data\shader\shadow.frag"
+				>
+			</File>
+			<File
+				RelativePath="..\data\shader\shadow.vert"
+				>
+			</File>
+			<File
+				RelativePath="..\data\shader\shadowMap.frag"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

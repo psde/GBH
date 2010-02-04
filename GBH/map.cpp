@@ -1,5 +1,13 @@
 #include "include.hpp"
 
+// ============== Just for testing:
+GLuint fboId;
+GLuint depthTextureId;
+int shadowMapWidth = 1024*4;
+int shadowMapHeight = 1024*4;
+// ==============
+
+
 Map::Map(const char *map, Style* style){
 	this->style = style;
 
@@ -23,8 +31,6 @@ Map::Map(const char *map, Style* style){
 	char* offset = animation_data->data;
 	while((int)offset - (int)starting < animation_data->header->size )
 	{
-		/*std::cout << (int)offset << " " << (int)starting << " " << (int)offset - (int)starting << " " << animation_data->header->size << std::endl;
-		system("pause");*/
 		TileAnimation anim;
 
 		anim.base = *reinterpret_cast<short*>(offset);
@@ -39,7 +45,7 @@ Map::Map(const char *map, Style* style){
 		anim.anim_length = *reinterpret_cast<char*>(offset);
 		offset += sizeof(char);
 
-		//anim.unused = *reinterpret_cast<char*>(offset);
+		// unused char in file structure
 		offset += sizeof(char);
 
 		anim.tiles = reinterpret_cast<short*>(offset);
@@ -98,11 +104,40 @@ Map::Map(const char *map, Style* style){
 			this->addBlock(c_map.blocks[column->blockd[i]], Vector3(x, -y, i+column->offset));
 		}
 	}
-
 	delete reader;
 
-
-
+	GLenum FBOstatus;
+	
+	glGenTextures(1, &depthTextureId);
+	glBindTexture(GL_TEXTURE_2D, depthTextureId);
+	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
+	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+	glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_INTENSITY); 
+	
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, shadowMapWidth, shadowMapHeight, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	
+	glGenFramebuffers(1, &fboId);
+	glBindFramebuffer(GL_FRAMEBUFFER, fboId);
+	
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTextureId, 0);
+	
+	FBOstatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if(FBOstatus != GL_FRAMEBUFFER_COMPLETE)
+	{
+		std::cout << "FBO error: " << FBOstatus << std::endl;
+	}
+	glBindFramebufferEXT(GL_FRAMEBUFFER, 0);
 }
 
 Map::~Map()
@@ -111,27 +146,150 @@ Map::~Map()
 
 void Map::drawGeometry()
 {
+	glActiveTexture(GL_TEXTURE0);
 	for(Part::iterator it = geom.begin(); it != geom.end(); it++)
 	{
-		int tex = (it->first > 1000 ? it->first - 1000 : it->first);
-		glBindTexture(GL_TEXTURE_2D, this->style->getTexture(tex, (it->first > 1000)));
+		glBindTexture(GL_TEXTURE_2D, this->style->getTexture((it->first > 1000 ? it->first - 1000 : it->first), (it->first > 1000)));
 		it->second.draw();
 	}
 
 	for(AnimatedPart::iterator it = animatedGeom.begin(); it != animatedGeom.end(); it++)
 	{
-		int tex = (it->first > 1000 ? it->first - 1000 : it->first);
-
-		tex = it->second.animationTiles[it->second.curTile];
-
 		glBindTexture(GL_TEXTURE_2D, this->style->getTexture(it->second.animationTiles[it->second.curTile], (it->first > 1000)));
 		it->second.part.draw();
 	}
 }
 
-void Map::draw()
+void setTextureMatrix(void)
 {
+
+}
+
+
+void Map::draw(Gosu::Graphics &graphics)
+{
+	Gosu::PostProcessing local(graphics);
+	static Gosu::ShaderProgram shadowMapProgram = local.compile(L"data/shader/shadowMap.frag");
+	static Gosu::ShaderProgram shadowProgram = local.compile(L"data/shader/shadow.frag", L"data/shader/shadow.vert");
+
+	glEnable(GL_TEXTURE_2D);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glActiveTexture(GL_TEXTURE0);
+
+	// render from the light pov to the shadow fbo
+	glBindFramebuffer(GL_FRAMEBUFFER, fboId);
+
+	glClear(GL_DEPTH_BUFFER_BIT);
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE); 
+
+	glViewport(0, 0, shadowMapWidth, shadowMapHeight);
+
+	glMatrixMode(GL_PROJECTION);
+
+	glPushMatrix();
+	glLoadIdentity();
+	gluPerspective(45.0f, shadowMapWidth/shadowMapHeight, 200.0f, 1000.0f);
+
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	gluLookAt(0, 0, 250, 128, -128, 0, 0, 0, 1);
+
+	glUseProgram(shadowMapProgram.program);
+
+	glUniform1i(glGetUniformLocation(shadowMapProgram.program, "colorTexture"), 0); 
+
+	// Save matrix to texture
+	float modelView[16];
+	float projection[16];
+
+	glGetFloatv(GL_MODELVIEW_MATRIX, modelView);
+	glGetFloatv(GL_PROJECTION_MATRIX, projection);
+	
+	glMatrixMode(GL_TEXTURE);
+	glActiveTexture(GL_TEXTURE7);
+	
+	glLoadIdentity();	
+
+	glMultMatrixf(projection);
+	glMultMatrixf(modelView);
+	
+	glMatrixMode(GL_MODELVIEW);
+
     this->drawGeometry();
+	
+	glUseProgram(0);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE); 
+
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+
+	//gluPerspective(45.0f, (Gosu::realWidth(graphics)/Gosu::realHeight(graphics)), 200.0f, 1000.0f);
+
+	// render normal camera view
+	glViewport(0, 0, Gosu::realWidth(graphics), Gosu::realHeight(graphics));
+	
+	glUseProgram(shadowProgram.program);
+
+	glUniform1i(glGetUniformLocation(shadowProgram.program, "colorTexture"), 0); 
+
+	glActiveTexture(GL_TEXTURE7);
+	glBindTexture(GL_TEXTURE_2D, depthTextureId);
+	glUniform1i(glGetUniformLocation(shadowProgram.program, "shadowMap"), 7); 
+
+	//setTextureMatrix();
+    this->drawGeometry();
+
+	glUseProgram(0);
+
+
+	// Debug code to visualise depth buffer onscreen
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	glOrtho(-1280/2,1280/2,-1024/2,1024/2,1,20);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	glColor4f(1,1,1,1);
+	glActiveTextureARB(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, depthTextureId);
+	glEnable(GL_TEXTURE_2D);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
+
+	glTranslated(0,0,-1);
+	
+	glBegin(GL_QUADS);
+		glTexCoord2d(0,0);
+		glVertex3f(0,0,0);
+
+		glTexCoord2d(1,0);
+		glVertex3f(1280/2,0,0);
+
+		glTexCoord2d(1,1);
+		glVertex3f(1280/2,1024/2,0);
+
+		glTexCoord2d(0,1);
+		glVertex3f(0,1024/2,0);
+
+	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
+
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+
+
+
 }
 
 void Map::update()
@@ -258,13 +416,20 @@ void Map::addBlock(BlockInfo &block, Vector3 &offset)
 	lid.bl = Vector3(high.x, high.y, 1); // what the hell, this is bottom right?!
 	lid.br = Vector3(low.x,  high.y, 1);
 
-
 	if(slope >= 1 && slope <= 8)
 		lid = this->buildSlopeLid(slope - 1, 2);
 	if(slope >= 9 && slope <= 40)
 		lid = this->buildSlopeLid(slope - 9, 8);
 	if(slope >= 41 && slope <= 44)
 		lid = this->buildSlopeLid(slope - 41, 1);
+
+	if(slope == 52) 
+	{
+		lid.tl = Vector3(0, 1, 1);
+		lid.tr = Vector3(0, 1, 1);
+		lid.bl = Vector3(0, 1, 1); 
+		lid.br = Vector3(0, 1, 1);
+	}
 
 	Quad<Vector3> top;
 	top.tl = Vector3(high.x, high.y, 0.0f);
@@ -290,8 +455,13 @@ void Map::addBlock(BlockInfo &block, Vector3 &offset)
 	left.bl = lid.tl;
 	left.br = lid.br;
 
+	if(slope == 52)
+	{
+		right.tl = Vector3(0, low.y, 0.0f);
+	}
+
 	// flat-fliping seems correct now
-	if(faces[2].flat && !faces[0].flat)
+	if(faces[2].flat && !faces[0].flat && faces[0].tile_number != 0)
 	{
 		top = bottom;
 		faces[2].tile_number = 0;
@@ -299,7 +469,7 @@ void Map::addBlock(BlockInfo &block, Vector3 &offset)
 		faces[0].flip = !faces[0].flip;
 	}
 
-	if(faces[0].flat && !faces[2].flat)
+	if(faces[0].flat && !faces[2].flat && faces[2].tile_number != 0)
 	{
 		bottom = top;
 		faces[0].tile_number = 0;
@@ -307,7 +477,7 @@ void Map::addBlock(BlockInfo &block, Vector3 &offset)
 		faces[2].flip = !faces[2].flip;
 	}
 
-	if(faces[1].flat && !faces[3].flat)
+	if(faces[1].flat && !faces[3].flat && faces[3].tile_number != 0)
 	{
 		left = right;
 		faces[1].tile_number = 0;
@@ -315,7 +485,7 @@ void Map::addBlock(BlockInfo &block, Vector3 &offset)
 		faces[3].flip = !faces[3].flip;
 	}
 
-	if(faces[3].flat && !faces[1].flat)
+	if(faces[3].flat && !faces[1].flat && faces[1].tile_number != 0)
 	{
 		right = left;
 		faces[3].tile_number = 0;
@@ -344,12 +514,15 @@ void Map::addFace(BlockFace &face, Quad<Vector3> &quad, Vector3 &offset, Vector2
 	// Obviously, pixels from the other side are leaking around when filtering
 	// So this offset tries to eleminate that - maybe fix the matrix to avoid this
 	// (Still happens on the mipmapped, distance tile textures)
+	// Anisotropic filtering helped, too.
+
 	vertices[0].texcoord = Vector2(0.01, 0.01);
 	vertices[1].texcoord = Vector2(0.99, 0.01);
 	vertices[2].texcoord = Vector2(0.99, 0.99);
 	vertices[3].texcoord = Vector2(0.01, 0.99);
 
-	// fix this:
+	// fix this - coord-low/high should not affect the texture coords
+	// (gta2 doesnt do this either, so we need to do some math magic)
 	/*vertices[0].texcoord = Vector2(0.01 * low.x,  0.01 * low.y);
 	vertices[1].texcoord = Vector2(0.99 * high.x, 0.01 * low.y);
 	vertices[2].texcoord = Vector2(0.99 * high.x, 0.99 * high.y);
@@ -382,16 +555,3 @@ void Map::addFace(BlockFace &face, Quad<Vector3> &quad, Vector3 &offset, Vector2
 		geom[texture].pushVertex(vertices[3]);
 	}
 }
-
-
-/*Matrix4x4 mat(Vector2(0.01, 0.01), Vector2(0.99, 0.01), Vector2(0.99, 0.99), Vector2(0.01, 0.99));
-
-if(face.flip == 0)
-	mat = Matrix4x4::scale(Vector3(-1, 1, 1)) * mat;	
-
-mat = Matrix4x4::rotationMatrixZ(Math::degreesToRadians(180 - (face.rotation_code * 90))) * mat;
-
-vertices[0].texcoord = Vector2(mat.f[0][0], mat.f[0][1]);
-vertices[1].texcoord = Vector2(mat.f[1][0], mat.f[1][1]);
-vertices[2].texcoord = Vector2(mat.f[2][0], mat.f[2][1]);
-vertices[3].texcoord = Vector2(mat.f[3][0], mat.f[3][1]);*/

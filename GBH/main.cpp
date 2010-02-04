@@ -34,7 +34,7 @@ class GameWindow : public Gosu::Window
 		void draw()
 		{
 			graphics().beginGL();
-			//glClearDepth(1.0f);
+
 			glViewport(0, 0, Gosu::realWidth(graphics()), Gosu::realHeight(graphics()));
 
 			glMatrixMode(GL_PROJECTION);
@@ -52,15 +52,18 @@ class GameWindow : public Gosu::Window
 			glEnable(GL_TEXTURE_2D);
 			
 			// z-ordering
-			glEnable(GL_DEPTH_TEST);			
+			glEnable(GL_DEPTH_TEST);
 			glDepthRange(0,1);
 			glDepthFunc(GL_LEQUAL);
 
-			// Alpha-testing
-			glAlphaFunc(GL_GREATER, 0.4f);
-			glEnable(GL_ALPHA_TEST);
-			
-			map->draw();
+			// Alpha-testing is now done in shader
+			/*glAlphaFunc(GL_GREATER, 0.4f);
+			glEnable(GL_ALPHA_TEST);*/
+
+			// Investigate this, maybe It can help with fliping of transparent stuff
+			//glEnable(GL_CULL_FACE);
+
+			map->draw(graphics());
 
 			// Koordinatenkreuz:
 			glDisable(GL_TEXTURE_2D);
