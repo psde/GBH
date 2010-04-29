@@ -30,7 +30,7 @@
 	#include "../../../Gosu/Gosu-PostProcessing/Gosu-PostProcessing/Gosu-PostProcessing.hpp"
 #else
 	#include "fpsCounter.hpp"
-	#include "Gosu-PostPRocessing.hpp"
+	#include "Gosu-PostProcessing.hpp"
 #endif
 
 #include "vecmat.hpp"
@@ -43,5 +43,6 @@
 #include "map_part.hpp"
 #include "map.hpp"
 
+using namespace std;
 
 #endif

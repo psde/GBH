@@ -160,14 +160,14 @@ void Map::drawGeometry()
 	}
 }
 
-void setTextureMatrix(void)
-{
-
-}
-
-
 void Map::draw(Gosu::Graphics &graphics)
 {
+
+
+	//this->drawGeometry();
+
+
+	//return;
 	Gosu::PostProcessing local(graphics);
 	static Gosu::ShaderProgram shadowMapProgram = local.compile(L"data/shader/shadowMap.frag");
 	static Gosu::ShaderProgram shadowProgram = local.compile(L"data/shader/shadow.frag", L"data/shader/shadow.vert");
@@ -207,6 +207,7 @@ void Map::draw(Gosu::Graphics &graphics)
 	float modelView[16];
 	float projection[16];
 
+
 	glGetFloatv(GL_MODELVIEW_MATRIX, modelView);
 	glGetFloatv(GL_PROJECTION_MATRIX, projection);
 	
@@ -214,6 +215,8 @@ void Map::draw(Gosu::Graphics &graphics)
 	glActiveTexture(GL_TEXTURE7);
 	
 	glLoadIdentity();	
+
+	//gluLookAt(0, 0, 250, 128, -128, 0, 0, 0, 1);
 
 	glMultMatrixf(projection);
 	glMultMatrixf(modelView);
@@ -237,6 +240,8 @@ void Map::draw(Gosu::Graphics &graphics)
 	glViewport(0, 0, Gosu::realWidth(graphics), Gosu::realHeight(graphics));
 	
 	glUseProgram(shadowProgram.program);
+
+	glUniformMatrix4fv(glGetUniformLocation(shadowProgram.program, "test"), 16, false, projection); 
 
 	glUniform1i(glGetUniformLocation(shadowProgram.program, "colorTexture"), 0); 
 

@@ -5,6 +5,7 @@ varying vec4 shadowCoord;
 
 float shadowLookup(float x, float y)
 {
+	shadowCoord.z -= 0.1;
 	float depth = shadow2DProj(shadowMap, shadowCoord );
 	return depth != 1.0 ? 0.25 : 1.0;
 	//return depth;

@@ -6,7 +6,7 @@ class GameWindow : public Gosu::Window
 {
 	private:
 		Gosu::Font *font;
-		Gosu::fpsCounter *fps;
+		//Gosu::fpsCounter *fps;
 
 		Style* style;
 		Map* map;
@@ -19,7 +19,7 @@ class GameWindow : public Gosu::Window
 		{
 			glewInit();
 			this->font = new Gosu::Font(graphics(), Gosu::defaultFontName(), 20);
-			this->fps = new Gosu::fpsCounter(&graphics(), Gosu::realWidth(graphics())-203, 3, 200, 100, 0.03f);
+			//this->fps = new Gosu::fpsCounter(&graphics(), Gosu::realWidth(graphics())-203, 3, 200, 100, 0.03f);
 
 			this->style = new Style("data/styles/wil.sty");
 
@@ -91,8 +91,8 @@ class GameWindow : public Gosu::Window
 
 			this->font->draw(L"no. of vertices: " + boost::lexical_cast<wstring>(this->map->getVerticeSize()) , 0, 20, 1);
 
-			fps->updateFPS();
-			fps->draw();
+			//fps->updateFPS();
+			//fps->draw();
 		}
 
 		void update()
