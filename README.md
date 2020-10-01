@@ -15,9 +15,3 @@ So half of the work I am doing on this is refactoring and cleaning... Yeah.
 
 #Features I want to implement:
 * Dynamic day/night with shadows and proper lighting 
-
-Here, have some screenshots:
-![Screenshot.](http://bayimg.com/image/kakdbaaca.jpg)
-![Screenshot.](http://bayimg.com/image/kakdfaaca.jpg)
-![Screenshot.](http://bayimg.com/image/kakdcaaca.jpg)
-![Screenshot.](http://bayimg.com/image/oajkjaacp.jpg)
